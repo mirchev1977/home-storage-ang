@@ -1,0 +1,8 @@
+.coords {
+  height: 400px;
+  background-image: url('https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg');
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}

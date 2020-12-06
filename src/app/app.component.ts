@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Container } from './common/container.model';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'home-storage';
+  containers = [
+    new Container ( 'edno' ),
+    new Container ( 'dve' ),
+    new Container ( 'tri' ),
+  ];
 }
