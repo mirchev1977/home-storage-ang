@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-item',
@@ -6,13 +6,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit {
-  name: string = '';
-  description: string = '';
-  synonyms: [] = [];
+  @Input() name:        string = '';
+  @Input() description: string = '';
+  @Input() synonyms:    []     = [];
+
+  //Labels
+  nameLabel        = ''
+  descriptionLabel = ''
+
+  vMode = false;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onChangeVisualMode () {
+    this.vMode = !this.vMode;
+
+    if ( this.vMode ) {
+      nameLabel = 'Name - Visual';
+      descriptionLabel = 'Description - Visual';
+    } else {
+      nameLabel = 'Name - Input';
+      descriptionLabel = 'Description - Input';
+    }
   }
 
 }

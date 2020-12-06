@@ -1,3 +1,20 @@
-<p class="bg-primary text-white text-center">
-  item works! This is great that item works!!!
-</p>
+
+<span *ngIf="vMode; then viewMode else inputMode">
+</span>
+<button class="btn btn-primary m-2 col-6" (click)="onChangeVisualMode()">Change</button>
+
+<ng-template #viewMode>
+  <div class="p-3 col-6 bg-light border rounded">
+    <h1>Hello world</h1>
+  </div>
+</ng-template>
+
+<ng-template #inputMode>
+  <div class="p-3 col-6 bg-light border rounded">
+    <label for="name" class="mb-0">{{ name }}</label>
+    <input type="text" class = "form-control col-12 mb-1" [(ngModel)]  = "name"        id = "name"        >
+    <label for="description" class="mb-0">{{ description }}</label>
+    <input type="text" class = "form-control col-12 mb-1" [(ngModel)]  = "description" id = "description" >
+  </div>
+</ng-template>
+
