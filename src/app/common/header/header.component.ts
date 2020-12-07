@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataStoreService } from '../../services/data-store.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,11 +10,17 @@ import { DataStoreService } from '../../services/data-store.service';
 export class HeaderComponent implements OnInit {
   userLoggedIn = false;
 
-  constructor( private dataStore: DataStoreService ) { }
+  constructor( private dataStore: DataStoreService, private router: Router, private route: ActivatedRoute ) { }
 
   ngOnInit() {
-    this.userLoggedIn = this.dataStore.userLoggedIn;
-    console.log( this.dataStore.allUsers );
+  }
+
+  onLogout() {
+    setTimeout( () => {
+      this.dataStore.userLoggedIn = false;
+      this.dataStore.currentUser  = {};
+      this.router.navigate( [ '/' ], { relativeTo: this.route } );
+    }, 1000 );
   }
 
 }
