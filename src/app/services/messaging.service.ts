@@ -2,9 +2,11 @@ export class MessagingService {
 
   displayError:   boolean = false;
   displaySuccess: boolean = false;
+  displayInfo:    boolean = false;
 
   errorMessage:   string = '';
   successMessage: string = '';
+  infoMessage:    string = '';
 
   onError ( errorMessage ) {
     this.displayError = true;
@@ -12,7 +14,7 @@ export class MessagingService {
     setTimeout( () => {
       this.displayError = false;
       this.errorMessage = '';
-    }, 5000 );
+    }, 7000 );
   }
 
   onSuccess ( successMessage ) {
@@ -21,6 +23,15 @@ export class MessagingService {
     setTimeout( () => {
       this.displaySuccess = false;
       this.successMessage = '';
-    }, 1000 );
+    }, 3000 );
+  }
+
+  onInfo ( infoMessage ) {
+    this.displayInfo = true;
+    this.infoMessage = infoMessage;
+    setTimeout( () => {
+      this.displayInfo = false;
+      this.infoMessage = '';
+    }, 3000 );
   }
 }

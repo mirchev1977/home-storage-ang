@@ -1,0 +1,26 @@
+<div class="p-3 col-sm-12 col-md-10 col-lg-8 col-xl-6 bg-light border rounded offset-3">
+  <label for="name" class="mb-0">Name</label>
+  <input 
+     type="text" 
+     class = "form-control col-12 mb-1" 
+     [(ngModel)]  = "name"        
+     id = "name"        
+     (keydown)="onKeyDownEvent($event)" >
+
+  <label for="email" class="mb-0">Email</label>
+  <input 
+     type="text" 
+     class = "form-control col-12 mb-1" 
+     [(ngModel)]  = "email"        
+     id = "email"        
+     (keydown)="onKeyDownEvent($event)" >
+
+  <label for="password" class="mb-0">Password</label>
+  <input 
+  type="password" 
+  class = "form-control col-12 mb-1" 
+  [(ngModel)]  = "password" id = "password" 
+  (keydown)="onKeyDownEvent($event)">
+
+  <button class="btn btn-primary col-3 mt-2" (click)="onRegister()">Log in</button>
+</div>

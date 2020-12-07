@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataStoreService } from '../../services/data-store.service';
+import { UserStoreService } from '../../services/user-store.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,7 +13,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   email = '';
   password = '';
 
-  constructor( private dataStore: DataStoreService, private router: Router, private route: ActivatedRoute ) { }
+  constructor( private userStore: UserStoreService, private router: Router, private route: ActivatedRoute ) { }
 
   ngOnInit() {
   }
@@ -25,9 +25,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   onLogin () {
-    this.dataStore.logIn( this.email, this.password ); 
+    this.userStore.logIn( this.email, this.password ); 
 
-    this.logInObservable =  this.dataStore.logInObservable.subscribe( 
+    this.logInObservable =  this.userStore.logInObservable.subscribe( 
       ( data: string ) => { 
         this.router.navigate( [ '/' ], { relativeTo: this.route } );
       },

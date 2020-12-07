@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Container } from './common/container.model';
-import { DataStoreService } from './services/data-store.service';
+import { UserStoreService } from './services/user-store.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,12 +17,12 @@ export class AppComponent implements OnInit, OnDestroy {
     new Container ( 'tri' ),
   ];
 
-  constructor( private dataStore: DataStoreService ) {}
+  constructor( private userStore: UserStoreService ) {}
 
   ngOnInit() {
-    this.dataStore.loadUsers();
+    this.userStore.loadUsers();
 
-    this.loadUsersObservable =  this.dataStore.loadUsersObservable.subscribe( 
+    this.loadUsersObservable =  this.userStore.loadUsersObservable.subscribe( 
       ( data: string )  => {
         console.log( data );
       },

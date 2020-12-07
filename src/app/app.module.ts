@@ -10,11 +10,13 @@ import { ContainerComponent } from './container/container.component';
 import { ContainersComponent } from './containers/containers.component';
 import { HeaderComponent } from './common/header/header.component';
 
-import { DataStoreService } from './services/data-store.service';
+import { UserStoreService } from './services/user-store.service';
 import { MessagingService } from './services/messaging.service';
 
 import { LoginFormComponent } from './common/login-form/login-form.component';
-import { HomePageComponent } from './home-page/home-page.component';
+import { HomePageComponent } from './common/home-page/home-page.component';
+import { MessagingComponent } from './common/messaging/messaging.component';
+import { RegistrationFormComponent } from './common/registration-form/registration-form.component';
 
 @NgModule({
   declarations: [
@@ -24,14 +26,16 @@ import { HomePageComponent } from './home-page/home-page.component';
     ContainersComponent,
     HeaderComponent,
     LoginFormComponent,
-    HomePageComponent
+    HomePageComponent,
+    MessagingComponent,
+    RegistrationFormComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
   ],
-  providers: [ DataStoreService, MessagingService ],
+  providers: [ UserStoreService, MessagingService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

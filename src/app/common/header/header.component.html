@@ -1,5 +1,5 @@
-<div class="alert alert-light bg-light float-right col-12 mb-0 p-0 text-right pr-5" *ngIf="dataStore.userLoggedIn">
-  Hello, {{ dataStore.currentUser.name }} [ {{ dataStore.currentUser.role }} ]
+<div class="alert alert-light bg-light float-right col-12 mb-0 p-0 text-right pr-5" *ngIf="userStore.userLoggedIn">
+  Hello, {{ userStore.currentUser.name }} [ {{ userStore.currentUser.role }} ]
 </div>
 <nav class="navbar navbar-expand-sm navbar-light bg-light mb-3 mt-0">
     <div class="container">
@@ -14,13 +14,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Services</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Contact</a>
-            </li>
-            <li class="nav-item" *ngIf="!dataStore.userLoggedIn">
+            <li class="nav-item" *ngIf="!userStore.userLoggedIn">
                 <a class="nav-link" routerLink="login">Login</a>
             </li>
-            <li class="nav-item" *ngIf="dataStore.userLoggedIn">
+            <li class="nav-item" *ngIf="!userStore.userLoggedIn">
+                <a class="nav-link" routerLink="register">Register</a>
+            </li>
+            <li class="nav-item" *ngIf="userStore.userLoggedIn">
                 <a class="nav-link" (click)="onLogout()" routerLink="">Logout</a>
             </li>
         </ul>
