@@ -15,6 +15,11 @@ export class UserStoreService {
   constructor( private messaging: MessagingService ) {}
 
   loadUsers () {
+    if ( localStorage.getItem( 'userLoggedIn' ) ) {
+      this.currentUser = JSON.parse( localStorage.getItem( 'currentUser' ) );
+      this.userLoggedIn = true;
+    }
+
     this.loadUsersObservable = Observable.create( ( observer: Observer<string> ) => {
       this.messaging.onInfo( 'Loading users...' );
       setTimeout( () => {
@@ -23,32 +28,34 @@ export class UserStoreService {
           this.allUsers = JSON.parse( locStUsers );
         } else {
           this.allUsers = [
-            {
-              id:       '1',
-              name:     'Pesho Peshev',
-              email:    'pesho@pesho.com',
-              password: 'pesho_pass',
-              role:     'admin',
-              token:    '1234',
-            },
-            {
-              id:       '2',
-              name:     'Gosho Goshev',
-              email:    'gosho@gosho.com',
-              password: 'gosho_pass',
-              role:     'user',
-              token:    '1234',
-            },
-            {
-              id:       '3',
-              name:     'Kiro Kirov',
-              email:    'kiro@kiro.com',
-              password: 'kiro_pass',
-              role:     'user',
-              token:    '1234',
-            },
+            new UserModel(
+              '1',
+              'Pesho Peshev',
+              'pesho@pesho.com',
+              'pesho_pass',
+              'admin',
+              '1234',
+            ),
+            new UserModel(
+              '2',
+              'Gosho Goshev',
+              'gosho@gosho.com',
+              'gosho_pass',
+              'user',
+              '1234',
+            ),
+            new UserModel(
+              '3',
+              'Kiro Kirov',
+              'kiro@kiro.com',
+              'kiro_pass',
+              'user',
+              '1234',
+            ),
           ];
         }
+
+        localStorage.setItem( 'allUsers', JSON.stringify( this.allUsers ) );
 
         this.messaging.onSuccess( 'Users successfully loaded!' );
         observer.next( 'Users loaded successfully' );
@@ -89,6 +96,10 @@ export class UserStoreService {
         if ( found && found.length > 0 ) {
           this.currentUser = found[ 0 ];
           this.userLoggedIn = true;
+
+          localStorage.setItem( 'currentUser', JSON.stringify( this.currentUser ) );
+          localStorage.setItem( 'userLoggedIn', 1 );
+
           this.messaging.onSuccess( 'User successfully logged in.' );
           observer.next( 'User successfully logged in.' );
         } else {
