@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center row bg-light col-12">
+  <div class="p-2 item-hl col-2">
+    <label>Name</label>
+    <input [(ngModel)]="name" type = "text" value="{{ name }}" style="width: 100%;" /></div>
+
+  <div class="p-2 item-hl col-4">
+    <label>Description</label>
+    <input [(ngModel)]="description" type = "text" value="{{ description }}" style="width: 100%;" /></div>
+
+  <div class="p-2 item-hl col-6">
+    <label>Items</label>
+    <input [(ngModel)]="items" type = "text" value="{{ items }}" style="width: 100%;" /></div>
+
+  <div class="p-2 item-hl col-2">
+    <div class="p-2 item-hl col-12">
+      <label>Privacy</label>
+      <select style="width: 100%;" (change)="onPrivacySelect( $event )">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+      </div>
+    <div class="p-2 item-hl col-12">
+      <label>Image Link</label>
+      <input [(ngModel)]="imgLink" type = "text" value="{{ imgLink }}" style="width: 100%;" /></div>
+    <button class="btn btn-primary p-2 item-hl col-12" (click)="onImageLoad()">Load Image</button>
+
+    <button class="btn btn-info p-4 item-hl col-12 mt-5" (click)="onSaveContainer()">SAVE...</button>
+  </div>
+
+    <div class="p-2 item-hl col-8 offset-1 mb-3" [ngStyle]="onStyleImage()"></div> 
+</div>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 import { MessagingService } from './messaging.service';
 import { UserModel } from '../models/user.model';
+import { ContainerModel } from '../models/container.model';
 
 @Injectable()
 export class UserStoreService {
@@ -192,5 +193,23 @@ export class UserStoreService {
     let locStUsers = JSON.stringify( this.allUsers );
     localStorage.setItem( 'allUsers', locStUsers ); 
     this.messaging.onSuccess( 'User deleted successfully!' );
+  }
+
+  //CONTAINERS
+  allContainers: (ContainerModel)[] = []
+
+  onSaveContainer ( container: ContainerModel ) {
+    if ( this.allContainers.length <= 0 ) {
+      container.id = '1';
+    } else {
+      let len = this.allContainers.length;
+      len++;
+      container.id = len.toString();
+    }
+
+    this.allContainers.push( container );
+
+    localStorage.setItem( 'allContainers', 
+      JSON.stringify( this.allContainers ) );
   }
 }

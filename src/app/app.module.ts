@@ -17,6 +17,9 @@ import { MessagingComponent } from './common/messaging/messaging.component';
 import { RegistrationFormComponent } from './common/registration-form/registration-form.component';
 import { UserComponent } from './components/user/user.component';
 import { UsersComponent } from './components/users/users.component';
+import { AuthGuard } from './services/auth-guard.service';
+import { AdminGuard } from './services/admin-guard.service';
+import { ContainerComponent } from './components/container/container.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +31,15 @@ import { UsersComponent } from './components/users/users.component';
     MessagingComponent,
     RegistrationFormComponent,
     UserComponent,
-    UsersComponent
+    UsersComponent,
+    ContainerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
   ],
-  providers: [ UserStoreService, MessagingService ],
+  providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

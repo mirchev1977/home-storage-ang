@@ -27,6 +27,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   onLogin () {
     this.userStore.logIn( this.email, this.password ); 
 
+    if ( !this.userStore.logInObservable ) return;
     this.logInObservable =  this.userStore.logInObservable.subscribe( 
       ( data: string ) => { 
         this.router.navigate( [ '/' ], { relativeTo: this.route } );

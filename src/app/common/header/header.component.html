@@ -10,7 +10,7 @@
               [routerLinkActiveOptions]="{exact:true}">
                 <a class="nav-link" routerLink="">Home</a>
             </li>
-            <li class="nav-item" *ngIf="userStore.userLoggedIn" routerLinkActive="active">
+            <li class="nav-item" *ngIf="onCheckIfAdmin()" routerLinkActive="active">
                 <a class="nav-link" routerLink="usersEdit">Edit Users</a>
             </li>
             <li class="nav-item" *ngIf="!userStore.userLoggedIn" routerLinkActive="active">
