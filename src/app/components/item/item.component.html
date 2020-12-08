@@ -1,0 +1,46 @@
+
+<span *ngIf="vMode; then viewMode else inputMode">
+</span>
+<button class="btn btn-primary col-sm-12 col-md-10 col-lg-8 col-xl-6 mt-2" (click)="onChangeVisualMode()">Change</button>
+
+<ng-template #viewMode>
+  <span *ngIf="true; then viewTemplate else inputTemplate"></span>
+</ng-template>
+
+<ng-template #inputMode>
+  <span *ngIf="true; then inputTemplate else inputTemplate"></span>
+</ng-template>
+
+<ng-template #viewTemplate>
+  <div [ngClass]="getClasses()">
+    <h1> {{ name }}:{{ description }} </h1>
+    <div class="d-flex flex-column row-hl coords">
+      <div class="item-hl bg-transparent" style="height:2%;" *ngFor="let coordRow of coordRows; let i = index" id="{{i}}">
+
+        <div class="d-flex justify-content-start row-hl" style="height:100%;">
+
+          <div 
+            class="item-hl bg-{{cell.bg}} text-center rounded-circle" 
+            *ngFor="let cell of coordRow; let cellI = index"
+            style="height:100%; width: 2%; position: relative;"
+            (click)="onCoordCatch($event)" id="{{i}}_{{cellI}}" 
+        ><img (click)="onCoordCatch($event)" id ="imt-map" *ngIf="cell.bg === 'warning' " src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/down3-512.png" height="50px" 
+        style="position: absolute; top: -50px !important; left: -13px;" /></div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #inputTemplate>
+  <div [ngClass]="getClasses()">
+    <label for="name" class="mb-0">{{ nameLabel }}</label>
+    <input type="text" class = "form-control col-12 mb-1" [(ngModel)]  = "name"        id = "name"        >
+    <label for="description" class="mb-0">{{ descriptionLabel }}</label>
+    <input type="text" class = "form-control col-12 mb-1" [(ngModel)]  = "description" id = "description" >
+  </div>
+</ng-template>
+
+

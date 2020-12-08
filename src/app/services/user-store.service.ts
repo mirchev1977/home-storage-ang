@@ -8,7 +8,7 @@ export class UserStoreService {
   allUsers = [];
 
   userLoggedIn: boolean = false;
-  currentUser = {};
+  currentUser:  UserModel;
 
   loadUsersObservable;
 
@@ -98,7 +98,7 @@ export class UserStoreService {
           this.userLoggedIn = true;
 
           localStorage.setItem( 'currentUser', JSON.stringify( this.currentUser ) );
-          localStorage.setItem( 'userLoggedIn', 1 );
+          localStorage.setItem( 'userLoggedIn', '1' );
 
           this.messaging.onSuccess( 'User successfully logged in.' );
           observer.next( 'User successfully logged in.' );
@@ -112,6 +112,33 @@ export class UserStoreService {
 
   registerObservable;
   register ( userModel: UserModel ) {
+      if ( !userModel.email || !userModel.password  || !userModel.name) {
+        this.messaging.onError( 'Please, do fill into all registration fields, please!' );
+        return;
+      }
+
+      if ( ( userModel.email.match( /^\s*$/ ) ) || ( userModel.password.match( /^\s*$/ ) ) || ( userModel.name.match( /^\s*$/ ) ) ) {
+        this.messaging.onError( 'Please, do enter all registration information, please!' );
+        return;
+      }
+
+      if ( !userModel.email.match( /@/ ) ) {
+        this.messaging.onError( 'Enter a valid email address, please!' );
+        return;
+      }
+
+      let existing = this.allUsers.filter( ( u ) => { return ( u.email === userModel.email ) } );
+      if ( existing.length > 0 ) {
+        this.messaging.onError( 'A user with email: ' + userModel.email + ' has already been registered!'  );
+        return;
+      }
+
+
+      if ( userModel.password.length <= 4 ) {
+        this.messaging.onError( 'Your password has to be longer than 4 characters...' );
+        return;
+      }
+
     this.registerObservable = Observable.create( ( observer: Observer<string> ) => {
       setTimeout( () => {
         this.allUsers.push( userModel );
@@ -126,5 +153,44 @@ export class UserStoreService {
         }
       }, 1000 );
     } );
+
+    return 1;
+  }
+
+  onSave ( id: string, name: string, email: string, password: string, role: string, token: string ) {
+    let user = this.allUsers.filter( ( usr ) => {
+      return ( usr.id === id );
+    } )[0];
+
+    user.name     = name;
+    user.email    = email;
+    user.password = password;
+    user.role     = role;
+    user.token    = token;
+
+    if ( (this.currentUser) && ( user.hasOwnProperty( 'email' ) ) && this.currentUser.email === user.email ) {
+      this.currentUser = user;
+    }
+
+    let locStUsers = JSON.stringify( this.allUsers );
+    localStorage.setItem( 'allUsers', locStUsers ); 
+    this.messaging.onSuccess( 'User ' + user.email + ' edited successfully!' );
+  }
+
+  onDelete ( id: string ) {
+    if ( ( this.currentUser ) && ( id === this.currentUser.id ) ) {
+      alert( "You cannot delete the currently logged user!" );
+      return;
+    }
+
+    let users = this.allUsers.filter( ( usr ) => {
+      return ( usr.id !== id );
+    } );
+
+    this.allUsers = users;
+
+    let locStUsers = JSON.stringify( this.allUsers );
+    localStorage.setItem( 'allUsers', locStUsers ); 
+    this.messaging.onSuccess( 'User deleted successfully!' );
   }
 }

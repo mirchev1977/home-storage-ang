@@ -5,9 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { ItemComponent } from './item/item.component';
-import { ContainerComponent } from './container/container.component';
-import { ContainersComponent } from './containers/containers.component';
+import { ItemComponent } from './components/item/item.component';
 import { HeaderComponent } from './common/header/header.component';
 
 import { UserStoreService } from './services/user-store.service';
@@ -17,18 +15,20 @@ import { LoginFormComponent } from './common/login-form/login-form.component';
 import { HomePageComponent } from './common/home-page/home-page.component';
 import { MessagingComponent } from './common/messaging/messaging.component';
 import { RegistrationFormComponent } from './common/registration-form/registration-form.component';
+import { UserComponent } from './components/user/user.component';
+import { UsersComponent } from './components/users/users.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ItemComponent,
-    ContainerComponent,
-    ContainersComponent,
     HeaderComponent,
     LoginFormComponent,
     HomePageComponent,
     MessagingComponent,
-    RegistrationFormComponent
+    RegistrationFormComponent,
+    UserComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Container } from './common/container.model';
+
+import { UserComponent } from './components/user/user.component';
+
 import { UserStoreService } from './services/user-store.service';
 import { Subscription } from 'rxjs';
 
@@ -10,12 +12,6 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   loadUsersObservable: Subscription;
-
-  containers = [
-    new Container ( 'edno' ),
-    new Container ( 'dve' ),
-    new Container ( 'tri' ),
-  ];
 
   constructor( private userStore: UserStoreService ) {}
 

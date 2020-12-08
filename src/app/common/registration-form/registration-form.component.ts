@@ -30,7 +30,9 @@ export class RegistrationFormComponent implements OnInit {
     nextId++;
     let model = new UserModel( nextId.toString(), this.name, this.email, this.password, 'user', '1234' );
 
-    this.userStore.register( model );
+    if ( !this.userStore.register( model ) ) {
+      return;
+    }
     this.registerObservable = this.userStore.registerObservable.subscribe(
       ( data: string ) => { 
         //this.router.navigate( [ '/' ], { relativeTo: this.route } );

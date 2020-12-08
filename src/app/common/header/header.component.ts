@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserStoreService } from '../../services/user-store.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MessagingService } from '../../services/messaging.service.ts';
+import { MessagingService } from '../../services/messaging.service';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
     setTimeout( () => {
       this.messaging.onInfo( 'User ' + crntUsr.email + ' just logged out...' );
       this.userStore.userLoggedIn = false;
-      this.userStore.currentUser  = {};
+      this.userStore.currentUser  = null;
       this.router.navigate( [ '/' ], { relativeTo: this.route } );
     }, 1000 );
   }
