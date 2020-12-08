@@ -1,3 +1,4 @@
+import { CoordsModel } from './coords.model';
 export class ContainerModel {
   constructor ( 
     public id:          string,
@@ -7,5 +8,6 @@ export class ContainerModel {
     public privacy:     string,
     public url:         string, 
     public creator:     string,
+    public coords:      CoordsModel,
   ) {}
 }

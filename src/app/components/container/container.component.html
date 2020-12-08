@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center row bg-light col-12">
+<div class="d-flex align-items-center row bg-light col-12 mb-3" *ngIf="inputMode">
   <div class="p-2 item-hl col-2">
     <label>Name</label>
     <input [(ngModel)]="name" type = "text" value="{{ name }}" style="width: 100%;" /></div>
@@ -27,5 +27,56 @@
     <button class="btn btn-info p-4 item-hl col-12 mt-5" (click)="onSaveContainer()">SAVE...</button>
   </div>
 
-    <div class="p-2 item-hl col-8 offset-1 mb-3" [ngStyle]="onStyleImage()"></div> 
+    <div class="p-2 item-hl col-8 offset-1 mb-3 d-flex flex-column row-hl" [ngStyle]="onStyleImage()">
+      <div class="item-hl bg-transparent" style="height:2%;" *ngFor="let coordRow of coordRows; let i = index" id="{{i}}">
+
+        
+        <div class="d-flex justify-content-start row-hl" style="height:100%;">
+
+
+          <div 
+            class="item-hl bg-{{cell.bg}} text-center rounded-circle" 
+            *ngFor="let cell of coordRow; let cellI = index"
+            style="height:100%; width: 2%; position: relative;"
+            (click)="onCoordCatch($event)" id="{{i}}_{{cellI}}" 
+        ><img (click)="onCoordCatch($event)" id ="imt-map" *ngIf="cell.bg === 'warning' " src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/down3-512.png" height="50px" 
+        style="position: absolute; top: -50px !important; left: -13px;" /></div>
+
+
+        </div>
+
+      </div>
+    </div> 
+</div>
+
+<div class="d-flex align-items-center row bg-light col-12 mb-3" *ngIf="!inputMode">
+  <div class="p-2 item-hl col-8">
+    <div class="p-2 item-hl col-12 lead text-center">{{name}}</div>
+    <div class="p-2 item-hl col-12 lead text-center">{{description}}</div>
+    <div class="p-2 item-hl col-12 lead text-center">{{items}}</div>
+    <div class="p-2 item-hl col-12 lead text-center">{{privacy}}</div>
+    <button class="btn btn-info offset-2 col-4" (click)="onEdit()">Edit</button>
+    <button class="btn btn-info col-4 ml-2" (click)="onDelete()">Delete</button>
+  </div>
+
+    <div class="p-2 item-hl col-4 mb-3 d-flex flex-column row-hl" [ngStyle]="onStyleImage()">
+      <div class="item-hl bg-transparent" style="height:2%;" *ngFor="let coordRow of coordRows; let i = index" id="{{i}}">
+
+        
+        <div class="d-flex justify-content-start row-hl" style="height:100%;">
+
+
+          <div 
+            class="item-hl bg-{{cell.bg}} text-center rounded-circle" 
+            *ngFor="let cell of coordRow; let cellI = index"
+            style="height:100%; width: 2%; position: relative;"
+            (click)="onCoordCatch($event)" id="{{i}}_{{cellI}}" 
+        ><img (click)="onCoordCatch($event)" id ="imt-map" *ngIf="cell.bg === 'warning' " src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/down3-512.png" height="50px" 
+        style="position: absolute; top: -50px !important; left: -13px;" /></div>
+
+
+        </div>
+
+      </div>
+    </div> 
 </div>

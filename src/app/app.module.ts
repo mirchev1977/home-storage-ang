@@ -20,6 +20,7 @@ import { UsersComponent } from './components/users/users.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { AdminGuard } from './services/admin-guard.service';
 import { ContainerComponent } from './components/container/container.component';
+import { ContainersComponent } from './components/containers/containers.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ContainerComponent } from './components/container/container.component';
     RegistrationFormComponent,
     UserComponent,
     UsersComponent,
-    ContainerComponent
+    ContainerComponent,
+    ContainersComponent
   ],
   imports: [
     BrowserModule,

@@ -17,6 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userStore.loadUsers();
+    this.userStore.loadLocations();
 
     this.loadUsersObservable =  this.userStore.loadUsersObservable.subscribe( 
       ( data: string )  => {

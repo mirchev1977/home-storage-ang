@@ -11,6 +11,9 @@ export class UserStoreService {
   userLoggedIn: boolean = false;
   currentUser:  UserModel;
 
+  //CONTAINERS
+  allContainers: (ContainerModel)[] = [];
+
   loadUsersObservable;
 
   constructor( private messaging: MessagingService ) {}
@@ -62,6 +65,15 @@ export class UserStoreService {
         observer.next( 'Users loaded successfully' );
       }, 2000 );
     });
+  }
+
+  loadLocations() {
+    let lsContainers = localStorage.getItem( 'allContainers');
+
+    if ( lsContainers ) {
+      this.allContainers = JSON.parse( lsContainers );
+      this.messaging.onSuccess( 'Locations loaded sucessfully!' );
+    }
   }
 
   logInObservable;
@@ -195,10 +207,14 @@ export class UserStoreService {
     this.messaging.onSuccess( 'User deleted successfully!' );
   }
 
-  //CONTAINERS
-  allContainers: (ContainerModel)[] = []
 
   onSaveContainer ( container: ContainerModel ) {
+    let lsContainers = localStorage.getItem( 'allContainers');
+
+    if ( lsContainers ) {
+      this.allContainers = JSON.parse( lsContainers );
+    }
+
     if ( this.allContainers.length <= 0 ) {
       container.id = '1';
     } else {
@@ -208,6 +224,17 @@ export class UserStoreService {
     }
 
     this.allContainers.push( container );
+
+    localStorage.setItem( 'allContainers', 
+      JSON.stringify( this.allContainers ) );
+  }
+
+  onContainerDelete ( contId ) {
+    let remaining = this.allContainers.filter( ( cont ) => {
+      return ( cont.id !== contId );
+    } );
+
+    this.allContainers = remaining;
 
     localStorage.setItem( 'allContainers', 
       JSON.stringify( this.allContainers ) );
