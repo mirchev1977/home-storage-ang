@@ -7,6 +7,7 @@
 </div>
 <div *ngFor="let container of userStore.allContainers">
   <app-container 
+        *ngIf="displayContainer ( container.privacy, container.creator )"
         [isNew]="false"
         [inputMode]="false" 
         [id]="container.id" 

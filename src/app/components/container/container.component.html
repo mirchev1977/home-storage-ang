@@ -1,16 +1,47 @@
-<div *ngIf="!isNew" class="alert alert-warning">
+<div *ngIf="!isNew" class="alert alert-warning" style="border: 1px solid lightblue;">
   <div *ngIf="!inputMode">
     <div *ngFor="let label of labels; let i = index">
-      <div class="alert col-8" *ngIf=" label.name !== 'ImgLink'"><strong>{{label.name}}:</strong> {{getValue( label.name )}}</div>
+      <div class="alert col-11" *ngIf=" label.name !== 'ImgLink'">
+        <div *ngIf="label.name !== 'Items'"><strong>{{label.name}}:</strong> {{getValue( label.name )}}</div>
+        <div *ngIf="label.name === 'Items'" style="max-height: 250px; overflow: auto;">
+          <strong>{{label.name}}:</strong> {{getValue( label.name )}}
+        </div>
+      </div>
     </div>
-    <button 
-      class="btn btn-primary col-2 mx-1 py-2" 
-      (click)="onEdit()">Edit</button>
+    <div *ngIf="userStore.userLoggedIn">
+      <button 
+        class="btn btn-primary col-2 mx-1 py-2" 
+        (click)="onCreateNew( 'from_existing' )">NEW</button>
+      <button 
+        class="btn btn-primary col-2 mx-1 py-2" 
+        (click)="onEdit()">Edit</button>
+      <button 
+        class="btn btn-info col-3 mx-1 py-2" 
+        (click)="onItemNew()">{{ newItemLabel }}</button>
+      <button 
+        class="btn btn-info col-3 mx-1 py-2" 
+        (click)="getItems()">{{ itemsButton }}</button>
+    </div>
+  </div>
+  <div *ngIf="itemNew" class="alert alert-secondary mt-2">
+    <app-item 
+      (itemSaved)="onSaveItem($event)"
+      [isNew]="true" [inputMode]="true" [containerId]="id"></app-item>
+  </div>
+  <div *ngIf="itemsOpened" class="alert alert-secondary mt-2 col-10 offset-1" style="max-height: 500px; overflow: auto;">
+    <div *ngFor="let item of allItemsArray; let i = index">
+      <app-item 
+        [description]="item.description"
+        [imgUrl]="item.imageUrl"
+        [isNew]="false" 
+        [inputMode]="false" 
+        [containerId]="id"></app-item>
+    </div>
   </div>
 
   <div *ngIf="inputMode">
     <div *ngFor="let label of labels; let i = index">
-      <div class="form-group" *ngIf="label.type === 'text'">
+      <div class="form-group" *ngIf="( label.type === 'text' ) && label.name !== 'Items'">
         <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
         <input class="form-control col-8 clear-both" type="text" value="{{getValue( label.name )}}" 
           id="{{label.name}}" (input)="onInput( $event )" style="height: 50px;" />
@@ -69,15 +100,15 @@
   <div *ngIf="!inputMode">
     <button 
       class="btn btn-primary col-2 offset-5 my-2 py-3" 
-      (click)="onCreateNew()">NEW</button>
+      (click)="onCreateNew( '' )">NEW</button>
   </div>
 
   <div *ngIf="inputMode">
     <div *ngFor="let label of labels; let i = index">
-      <div class="form-group" *ngIf="label.type === 'text'">
+      <div class="form-group" *ngIf="( label.type === 'text' ) && ( label.name !== 'Items' )">
         <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
         <input class="form-control col-8 clear-both" type="text" 
-          id="{{label.name}}" (input)="onInput( $event )" style="height: 50px;" />
+          id="{{label.name}}" (input)="onInput( $event )" style="height: 50px;" /> 
       </div>
       <div class="form-group" *ngIf="label.type === 'select'">
         <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>

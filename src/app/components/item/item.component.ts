@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Router, ActivatedRoute     } from '@angular/router';
 
 @Component({
   selector: 'app-item',
@@ -6,98 +7,65 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit {
-  @Input() name:        string = '';
-  @Input() description: string = '';
-  @Input() synonyms:    []     = [];
+  @Output() itemSaved = new EventEmitter();
 
-  //Labels
-  nameLabel        = ''
-  descriptionLabel = ''
+  @Input() description: string;
+  @Input() imgUrl:      string;
 
-  vMode = true;
+  @Input() isNew:     boolean = false;
+  @Input() inputMode: boolean = false;
 
-  selected = false;
-  placeCoords = { row: '', col: '' };
+  @Input() containerId: string;
 
-  constructor() { }
-
-  coordRows = [];
+  constructor(
+    private router: Router,
+    private route:  ActivatedRoute,
+  ) {}
 
   ngOnInit() {
-    for ( let i = 0; i < 50; i++ ) {
-      let arrRow = [];
-
-      for ( let i = 0; i < 50; i++ ) {
-        arrRow.push( { value: i,  bg: 'transparent' } );
-      }
-
-      this.coordRows.push( 
-        arrRow
-      );
-    }
-      this.switchView();
-  }
-
-  onChangeVisualMode () {
-    this.vMode = !this.vMode;
-    this.switchView()
-  }
-
-  getClasses () {
-    //let arr = [ "p-3", "col-12", "bg-light", "border", "rounded", "offset-3" ];
-    let arr = [ "p-3", 'col-sm-12', 'col-md-10', 'col-lg-8', 'col-xl-6', "bg-light", "border", "rounded" ];
-    return arr.join( " " );
-  }
-
-  switchView () {
-    if ( this.vMode ) {
-      this.nameLabel = 'Name - Visual';
-      this.descriptionLabel = 'Description - Visual';
-    } else {
-      this.nameLabel = 'Name - Input';
-      this.descriptionLabel = 'Description - Input';
-    }
-  }
-
-  onCoordCatch( event ) {
-    var id = '';
-
-    if ( event.target.tagName.match( /img/i ) ) {
-      if ( !event.target                  ) return;
-      if ( !event.target.parentElement    ) return;
-      if ( !event.target.parentElement.id ) return;
-      id = event.target.parentElement.id; 
-    } else {
-      id = event.target.id;
-    }
-
-    if ( !id ) return;
-
-    var coords = id.split( '_' );
-    var row = coords[ 0 ];
-    var col = coords[ 1 ];
-
     if ( 
-      row == this.placeCoords.row 
-      && col == this.placeCoords.col 
+      ( this.route.snapshot.url.length > 0 ) 
+      && ( this.route.snapshot.url[ 0 ].path === 'item'        ) 
+      && ( this.route.snapshot.url[ 1 ].path.match( /[0-9]+/ ) ) 
+      && ( this.route.snapshot.url[ 2 ].path === 'new'         ) 
     ) {
-      this.placeCoords.row = '';
-      this.placeCoords.col = '';
-      this.selected = false;
-      this.coordRows[ row ][ col ].bg = 'transparent';
-      return;
+      this.isNew     = true;
+      this.inputMode = true;
+      this.containerId = this.route.snapshot.url[ 1 ].path;
+    }
+  }
+
+  onSave () {
+    let lsItems = localStorage.getItem( 'allItems' );
+
+    let allItemsArray = [];
+    if ( lsItems && lsItems.length > 0 )  {
+      allItemsArray = JSON.parse( lsItems );
     }
 
-    if ( this.selected ) {
-      return;
+    allItemsArray.push( {
+      description: this.description,
+      containerId: this.containerId,
+      imageUrl:    this.imgUrl,
+    } );
+
+    localStorage.setItem( 'allItems', JSON.stringify( allItemsArray ) ); 
+    this.itemSaved.emit();
+  }
+
+  onStyleImage () {
+    let imgHeight = '300px';
+    if ( this.inputMode ) {
+      imgHeight = '500px';
+    } else {
+      imgHeight = '300px';
     }
-
-    this.placeCoords.row = row;
-    this.placeCoords.col = col;
-
-    this.selected = true;
-
-    this.coordRows[ row ][ col ].bg = 'warning';
+    return {'height': imgHeight, 'background-color': 'yellow', 
+    'background-image': "url('"+ this.imgUrl +"')",
+      'background-position': 'center',
+      'background-repeat':   'no-repeat',
+      'background-size': '100% 100%',
+    };
   }
 
 }

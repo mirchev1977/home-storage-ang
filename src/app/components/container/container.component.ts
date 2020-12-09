@@ -34,10 +34,28 @@ export class ContainerComponent implements OnInit {
   @Input() inputMode = false;
   @Input() isNew: boolean;
 
+  itemNew: boolean = false;
+  newItemLabel: string = 'New Item';
+
+  itemsButton: string = "Items";
+  itemsOpened: boolean = false;
+
+  allItemsArray = [];
+
   constructor(
     private userStore: UserStoreService, 
     private messaging: MessagingService,
   ) { }
+
+  onItemNew () {
+    this.itemNew = !this.itemNew;
+
+    if ( this.itemNew ) {
+      this.newItemLabel = 'New Item - Close';
+    } else {
+      this.newItemLabel = 'New Item';
+    }
+  }
 
   checkIfSelected( option ) {
     let opt = option.toLowerCase();
@@ -62,7 +80,22 @@ export class ContainerComponent implements OnInit {
     this[ prop ] = event.currentTarget.value;
   }
 
+  onUpdateItems () {
+    this.getAllItems();
+    if ( this.allItemsArray.length > 0 ) {
+      let itemsDescr = [];
+      for ( let itm of this.allItemsArray ) {
+        itemsDescr.push( itm.description );
+      }
+      this.items = itemsDescr.join( ';; ' );
+    } else {
+      this.items = 'items...';
+    }
+  }
+
   ngOnInit() {
+    this.onUpdateItems();
+
     for ( let i = 0; i < 50; i++ ) {
       let arrRow = [];
 
@@ -89,11 +122,14 @@ export class ContainerComponent implements OnInit {
 
   }
 
-  onCreateNew () {
+  onCreateNew ( opt ) {
     this.inputMode   = !this.inputMode;
     this.coordRows = [];
     this.selected = false;
+
     this.ngOnInit();
+
+    this.id = '';
   }
 
   onCancel () {
@@ -121,7 +157,7 @@ export class ContainerComponent implements OnInit {
 
   onSaveContainer () {
     if ( !this.description     ) return;
-    if ( !this.items           ) return;
+    //if ( !this.items           ) return;
     if ( !this.placeCoords.row ) return;
     if ( !this.placeCoords.col ) return;
     let model = new ContainerModel(
@@ -143,11 +179,15 @@ export class ContainerComponent implements OnInit {
   }
 
   onSaveExisting () {
-    if ( !this.id              ) return;
+    if ( !this.id              ) {
+      this.onSaveContainer();
+      return;
+    }
     if ( !this.description     ) return;
-    if ( !this.items           ) return;
+    //if ( !this.items           ) return;
     if ( !this.placeCoords.row ) return;
     if ( !this.placeCoords.col ) return;
+
     let model = new ContainerModel(
       this.id,
       this.imgLink,     
@@ -158,8 +198,13 @@ export class ContainerComponent implements OnInit {
       this.userStore.currentUser.id,     
       this.placeCoords,
     );
+
     this.userStore.onSaveExisting ( model );
     this.inputMode = false;
+
+    this.userStore.allContainers = JSON.parse(
+      localStorage.getItem( 'allContainers' )
+    );
   }
 
   onCoordCatch( event ) {
@@ -237,6 +282,35 @@ export class ContainerComponent implements OnInit {
     if ( !this.userStore.currentUser.id ) { return false; };
     return ( this.creator == this.userStore.currentUser.id );
     return true;
+  }
+
+  onSaveItem() {
+    this.itemNew      = false;
+    this.onUpdateItems();
+  }
+
+  getAllItems () {
+    let allItems = localStorage.getItem( 'allItems' );
+
+    if ( allItems ) {
+      allItems = JSON.parse( allItems );
+      if ( Array.isArray( allItems ) ) {
+        this.allItemsArray = allItems.filter( ( itm ) => {
+          return ( itm.containerId === this.id );
+        } );
+      }
+    }
+  }
+
+  getItems () {
+    this.itemsOpened = !this.itemsOpened;
+
+    if ( this.itemsOpened ) {
+      this.itemsButton = 'Items - Close';
+      this.getAllItems();
+    } else {
+      this.itemsButton = 'Items';
+    }
   }
 
 }

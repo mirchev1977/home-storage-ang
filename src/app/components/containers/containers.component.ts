@@ -29,6 +29,27 @@ export class ContainersComponent implements OnInit {
     }
   }
 
+  displayContainer ( privacy, creatorId ) {
+    if ( !privacy ) return false;
+
+    var currentUserId = this.getCurrentUserId();
+
+    if ( 
+      ( ( privacy === 'private' ) || ( privacy === 'public' ) ) 
+      && ( this.containerPrivate === true ) 
+      && ( creatorId === currentUserId )
+    ) {
+      return true;
+    }
+
+    if ( 
+      ( privacy === 'public' ) 
+      && ( this.containerPrivate === false ) 
+    ) {
+      return true;
+    }
+  }
+
   getCurrentUserId() {
     if ( this.userStore.currentUser && this.userStore.currentUser.id  ) {
       return this.userStore.currentUser.id;
