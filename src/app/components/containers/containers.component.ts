@@ -1,4 +1,4 @@
-import { Component, OnInit  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserStoreService   } from '../../services/user-store.service';
 import { MessagingService   } from '../../services/messaging.service';
 import { ContainerComponent } from '../container/container.component';

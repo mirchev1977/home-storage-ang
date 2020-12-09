@@ -20,15 +20,47 @@ export class ContainerComponent implements OnInit {
 
   coordRows = [];
 
+  labels = [
+    { name:  "Description", type: "text"                                     },
+    { name:  "Items",       type: "text"                                     },
+    { name:  "Privacy",     type: "select", options: [ 'Public', 'Private' ] },
+    { name:  "ImgLink",     type: "text"                                     },
+  ];
+
+
   @Input() placeCoords = { row: '', col: '' };
   selected = false;
 
-  @Input() inputMode = true;
+  @Input() inputMode = false;
+  @Input() isNew: boolean;
 
   constructor(
     private userStore: UserStoreService, 
-    private messaging: MessagingService
+    private messaging: MessagingService,
   ) { }
+
+  checkIfSelected( option ) {
+    let opt = option.toLowerCase();
+
+    if ( opt === this.privacy ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getValue( label ) {
+    return this[ label.toLowerCase() ];
+  }
+
+  onInput( event ) {
+    let prop = event.currentTarget.id.toString().toLowerCase();
+    if ( event.currentTarget.id === 'ImgLink' ) {
+      prop     = 'imgLink';
+      this.url = event.currentTarget.value;
+    }
+    this[ prop ] = event.currentTarget.value;
+  }
 
   ngOnInit() {
     for ( let i = 0; i < 50; i++ ) {
@@ -57,12 +89,23 @@ export class ContainerComponent implements OnInit {
 
   }
 
+  onCreateNew () {
+    this.inputMode   = !this.inputMode;
+    this.coordRows = [];
+    this.selected = false;
+    this.ngOnInit();
+  }
+
+  onCancel () {
+    this.inputMode = false;
+  }
+
   onStyleImage () {
-    let imgHeight = '200px';
+    let imgHeight = '300px';
     if ( this.inputMode ) {
-      imgHeight = '400px';
+      imgHeight = '500px';
     } else {
-      imgHeight = '200px';
+      imgHeight = '300px';
     }
     return {'height': imgHeight, 'background-color': 'yellow', 
     'background-image': "url('"+ this.url +"')",
@@ -72,15 +115,15 @@ export class ContainerComponent implements OnInit {
     };
   }
 
-  onImageLoad() {
-    this.url = this.imgLink;
-  }
-
   onPrivacySelect( event ) {
     this.privacy = event.currentTarget.options[ event.currentTarget.options.selectedIndex ].value;
   }
 
   onSaveContainer () {
+    if ( !this.description     ) return;
+    if ( !this.items           ) return;
+    if ( !this.placeCoords.row ) return;
+    if ( !this.placeCoords.col ) return;
     let model = new ContainerModel(
       this.id,
       this.imgLink,     
@@ -92,6 +135,30 @@ export class ContainerComponent implements OnInit {
       this.placeCoords,
     );
     this.userStore.onSaveContainer ( model );
+    this.inputMode = false;
+
+    this.placeCoords.row = '';
+    this.placeCoords.col = '';
+    this.url             = 'https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg';
+  }
+
+  onSaveExisting () {
+    if ( !this.id              ) return;
+    if ( !this.description     ) return;
+    if ( !this.items           ) return;
+    if ( !this.placeCoords.row ) return;
+    if ( !this.placeCoords.col ) return;
+    let model = new ContainerModel(
+      this.id,
+      this.imgLink,     
+      this.description, 
+      this.items,       
+      this.privacy,     
+      this.url,          
+      this.userStore.currentUser.id,     
+      this.placeCoords,
+    );
+    this.userStore.onSaveExisting ( model );
     this.inputMode = false;
   }
 
@@ -137,15 +204,39 @@ export class ContainerComponent implements OnInit {
   }
 
   onEdit() {
+    if ( this.isNew ) {
+      this.inputMode = true;
+      return true;
+    } else {
+      this.inputMode = true;
+    }
+
     if ( !this.userStore.currentUser    ) return;
     if ( !this.userStore.currentUser.id ) return;
+
+    if ( this.creator !== this.userStore.currentUser.id ) return;
+
     this.inputMode = true;
   }
 
   onDelete () {
+    if ( this.isNew ) return true;
+
     if ( !this.userStore.currentUser    ) return;
     if ( !this.userStore.currentUser.id ) return;
+
+    if ( this.creator !== this.userStore.currentUser.id ) return;
+
     this.userStore.onContainerDelete( this.id );
+  }
+
+  isOwnedByCurrentUser () {
+    if ( this.isNew ) return true;
+    if ( !this.userStore                ) { return false; };
+    if ( !this.userStore.currentUser    ) { return false; };
+    if ( !this.userStore.currentUser.id ) { return false; };
+    return ( this.creator == this.userStore.currentUser.id );
+    return true;
   }
 
 }

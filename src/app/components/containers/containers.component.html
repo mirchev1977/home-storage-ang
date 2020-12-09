@@ -1,6 +1,5 @@
 <div *ngIf="checkIfLoggedIn()">
-  <h2 class="lead">Create new Location</h2>
-  <app-container [inputMode]="false"></app-container>
+  <app-container [inputMode]="false" [isNew]="true" ></app-container>
 </div>
 
 <div class="alert alert-primary">
@@ -8,11 +7,7 @@
 </div>
 <div *ngFor="let container of userStore.allContainers">
   <app-container 
-          *ngIf="( 
-          isOwnedByCurrentUser( container.creator ) 
-          && ( ( container.privacy == 'private' ) && containerPrivate ) 
-          || 
-          ( ( container.privacy == 'public' ) && !containerPrivate ) )"
+        [isNew]="false"
         [inputMode]="false" 
         [id]="container.id" 
         [imgLink]="container.imgLink" 
@@ -20,5 +15,6 @@
         [items]="container.items" 
         [privacy]="container.privacy" 
         [url]="container.url" 
+        [creator]="container.creator" 
         [placeCoords]="container.coords"></app-container>
 </div>

@@ -227,6 +227,10 @@ export class UserStoreService {
 
     localStorage.setItem( 'allContainers', 
       JSON.stringify( this.allContainers ) );
+
+    this.allContainers = JSON.parse( 
+      localStorage.getItem( 'allContainers' )
+    );
   }
 
   onContainerDelete ( contId ) {
@@ -238,5 +242,21 @@ export class UserStoreService {
 
     localStorage.setItem( 'allContainers', 
       JSON.stringify( this.allContainers ) );
+  }
+
+  onSaveExisting ( model ) {
+    let containers = JSON.parse( localStorage.getItem( 'allContainers' ) );
+
+    let found = containers.filter( ( cont ) => {
+      return ( cont.id === model.id );
+    } )[ 0 ];
+
+    for ( let key in model ) {
+      if ( key === 'id' ) continue;
+
+      found[ key ] = model[ key ];
+    }
+
+    localStorage.setItem( 'allContainers', JSON.stringify( containers ) );
   }
 }
