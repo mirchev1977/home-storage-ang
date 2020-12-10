@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ItemComponent } from './components/item/item.component';
@@ -25,6 +26,7 @@ import { ContainersComponent } from './components/containers/containers.componen
 import { LocationsComponent } from './components/locations/locations.component';
 import { LocationComponent } from './components/location/location.component';
 import { HomeComponent } from './components/home/home.component';
+import { LocationsPrivateComponent } from './components/locations/locations-private/locations-private.component';
 
 @NgModule({
   declarations: [
@@ -41,12 +43,14 @@ import { HomeComponent } from './components/home/home.component';
     ContainersComponent,
     LocationsComponent,
     LocationComponent,
-    HomeComponent
+    HomeComponent,
+    LocationsPrivateComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    HttpClientModule
   ],
   providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard, LocationGuard ],
   bootstrap: [AppComponent]

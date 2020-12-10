@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute     } from '@angular/router';
+import { UserStoreService } from '../../services/user-store.service';
 
 @Component({
   selector: 'app-item',
@@ -21,6 +22,7 @@ export class ItemComponent implements OnInit {
   @Input() containerId: string;
 
   constructor(
+    public storeService: UserStoreService,
     private router: Router,
     private route:  ActivatedRoute,
   ) {}

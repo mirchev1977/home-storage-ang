@@ -1,11 +1,13 @@
-<div *ngIf="allLocationsArray.length <= 0">
+<div *ngIf="storeService.userLoggedIn">
   <h3>Create new Location</h3>
   <app-location 
     [isNew]="true" 
     [isInputMode]="true"></app-location>
 </div>
+<h1 class="my-3" *ngIf="storeService.userLoggedIn">All Locations</h1>
 <div *ngFor="let loc of allLocationsArray; let i = index">
   <app-location 
+    *ngIf="displayLocation( loc.privacy, loc.creator )"
     [id]="loc.id"
     [location]="loc.location"
     [privacy]="loc.privacy"

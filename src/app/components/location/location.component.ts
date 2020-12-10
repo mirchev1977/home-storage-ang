@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UserStoreService } from '../../services/user-store.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-location',
@@ -16,7 +17,7 @@ export class LocationComponent implements OnInit {
   @Input() imgUrl:   string = '';
   @Input() creator:  string = '';
 
-  constructor( public storeService: UserStoreService ) { }
+  constructor( public storeService: UserStoreService, private router: Router, private route: ActivatedRoute ) { }
 
   ngOnInit() {
   }
@@ -49,20 +50,20 @@ export class LocationComponent implements OnInit {
   }
 
   onSave () {
-    let response = this.storeService.onLocationSave( {
+    this.storeService.onLocationSave( {
       id:       this.id,
       location: this.location,
       privacy:  this.privacy,
       imgUrl:   this.imgUrl,
       creator:  this.storeService.currentUser.id,
-    } );
-
-    if ( response.status ) {
-      this.id = response.model.id;
-
-      this.isNew       = false;
-      this.isInputMode = false;
-    }
+    } )
+      .subscribe( response => {
+        if ( response[ 'status' ] === 'ok' ) {
+          this.isNew       = false;
+          this.isInputMode = false;
+        }
+      } )
+    ;
   }
 
   appendClasses ( label ) {
@@ -104,6 +105,7 @@ export class LocationComponent implements OnInit {
 
   onSelect () {
     this.storeService.onSelectLocation( this.id );
+    this.router.navigate( [ '/' ], { relativeTo: this.route } );
   }
 
   onCancel () {

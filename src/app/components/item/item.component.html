@@ -26,7 +26,7 @@
   <div *ngIf="!inputMode"><!-- <333333333333333333> -->
     <div class="alert alert-success">
       <div class="col-12 mb-3" style="max-height: 250px; overflow: auto;"><strong>Item:</strong> {{ description }}</div>
-      <div class="form-group mt-1">
+      <div class="form-group mt-1" *ngIf="storeService.userLoggedIn">
         <button class="btn btn-light col-3 ml-3" (click)="editItem()">EDIT</button>
         <button class="btn btn-light col-4 ml-1" (click)="deleteItem()">DELETE</button>
       </div>

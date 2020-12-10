@@ -10,11 +10,14 @@
               [routerLinkActiveOptions]="{exact:true}">
                 <a class="nav-link" routerLink="">Home</a>
             </li>
+            <li class="nav-item" *ngIf="( userStore.userLoggedIn ) && ( userStore.locationSelected <= 0)" routerLinkActive="active">
+                <a class="nav-link" routerLink="locations/private">Private Locations</a>
+            </li>
             <li class="nav-item" *ngIf="( userStore.userLoggedIn ) && ( userStore.locationSelected > 0)" routerLinkActive="active">
                 <a class="nav-link" routerLink="containers/private">Private Containers</a>
             </li>
             <li class="nav-item" 
-              *ngIf="( userStore.userLoggedIn ) && ( userStore.locationSelected > 0)"
+              *ngIf="userStore.locationSelected > 0"
               (click)="onChangeLocation()">
                 <a class="nav-link" routerLink="">Change Location</a>
             </li>

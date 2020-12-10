@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable           } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
-import { MessagingService } from './messaging.service';
-import { UserModel } from '../models/user.model';
-import { ContainerModel } from '../models/container.model';
+import { MessagingService     } from './messaging.service';
+import { UserModel            } from '../models/user.model';
+import { ContainerModel       } from '../models/container.model';
+import { HttpClient           } from '@angular/common/http';
 
 @Injectable()
 export class UserStoreService {
-  allUsers = [];
+  allUsers: any = [];
 
   userLoggedIn: boolean = false;
   currentUser:  UserModel;
@@ -16,7 +17,7 @@ export class UserStoreService {
 
   loadUsersObservable;
 
-  constructor( private messaging: MessagingService ) {}
+  constructor( private messaging: MessagingService, private http: HttpClient ) {}
 
   loadUsers () {
     if ( localStorage.getItem( 'userLoggedIn' ) ) {
@@ -24,46 +25,15 @@ export class UserStoreService {
       this.userLoggedIn = true;
     }
 
-    this.loadUsersObservable = Observable.create( ( observer: Observer<string> ) => {
+      this.loadUsersObservable 
+          = Observable.create( ( observer: Observer<string> ) => {
       this.messaging.onInfo( 'Loading users...' );
-      setTimeout( () => {
-        let locStUsers = localStorage.getItem( 'allUsers' );
-        if ( locStUsers ) {
-          this.allUsers = JSON.parse( locStUsers );
-        } else {
-          this.allUsers = [
-            new UserModel(
-              '1',
-              'Pesho Peshev',
-              'pesho@pesho.com',
-              'pesho_pass',
-              'admin',
-              '1234',
-            ),
-            new UserModel(
-              '2',
-              'Gosho Goshev',
-              'gosho@gosho.com',
-              'gosho_pass',
-              'user',
-              '1234',
-            ),
-            new UserModel(
-              '3',
-              'Kiro Kirov',
-              'kiro@kiro.com',
-              'kiro_pass',
-              'user',
-              '1234',
-            ),
-          ];
-        }
-
-        localStorage.setItem( 'allUsers', JSON.stringify( this.allUsers ) );
-
-        this.messaging.onSuccess( 'Users successfully loaded!' );
-        observer.next( 'Users loaded successfully' );
-      }, 2000 );
+      this.http.get( 'http://localhost:8000/users/all' )
+          .subscribe( responseData => {
+              this.allUsers = responseData;
+                this.messaging.onSuccess( 'Users successfully loaded!' );
+                observer.next( 'Users loaded successfully' );
+          } );
     });
   }
 
@@ -77,7 +47,6 @@ export class UserStoreService {
   }
 
   logInObservable;
-
   logIn ( email: string, password: string ) {
     if ( !email || !password ) {
       this.messaging.onError( 'Please, do enter all credentials, please!' );
@@ -121,58 +90,66 @@ export class UserStoreService {
         }
       }, 1000 );
     } );
+
+    return this.logInObservable;
   }
 
   registerObservable;
   register ( userModel: UserModel ) {
-      if ( !userModel.email || !userModel.password  || !userModel.name) {
-        this.messaging.onError( 'Please, do fill into all registration fields, please!' );
-        return;
-      }
+    if ( !userModel.email || !userModel.password  || !userModel.name) {
+      this.messaging.onError( 'Please, do fill into all registration fields, please!' );
+      return;
+    }
 
-      if ( ( userModel.email.match( /^\s*$/ ) ) || ( userModel.password.match( /^\s*$/ ) ) || ( userModel.name.match( /^\s*$/ ) ) ) {
-        this.messaging.onError( 'Please, do enter all registration information, please!' );
-        return;
-      }
+    if ( ( userModel.email.match( /^\s*$/ ) ) || ( userModel.password.match( /^\s*$/ ) ) || ( userModel.name.match( /^\s*$/ ) ) ) {
+      this.messaging.onError( 'Please, do enter all registration information, please!' );
+      return;
+    }
 
-      if ( !userModel.email.match( /@/ ) ) {
-        this.messaging.onError( 'Enter a valid email address, please!' );
-        return;
-      }
+    if ( !userModel.email.match( /@/ ) ) {
+      this.messaging.onError( 'Enter a valid email address, please!' );
+      return;
+    }
 
-      let existing = this.allUsers.filter( ( u ) => { return ( u.email === userModel.email ) } );
-      if ( existing.length > 0 ) {
-        this.messaging.onError( 'A user with email: ' + userModel.email + ' has already been registered!'  );
-        return;
-      }
+    let existing = this.allUsers.filter( ( u ) => { return ( u.email === userModel.email ) } );
+    if ( existing.length > 0 ) {
+      this.messaging.onError( 'A user with email: ' + userModel.email + ' has already been registered!'  );
+      return;
+    }
 
 
-      if ( userModel.password.length <= 4 ) {
-        this.messaging.onError( 'Your password has to be longer than 4 characters...' );
-        return;
-      }
+    if ( userModel.password.length <= 4 ) {
+      this.messaging.onError( 'Your password has to be longer than 4 characters...' );
+      return;
+    }
 
-    this.registerObservable = Observable.create( ( observer: Observer<string> ) => {
-      setTimeout( () => {
-        this.allUsers.push( userModel );
-        let locStUsers = JSON.stringify( this.allUsers );
-        localStorage.setItem( 'allUsers', locStUsers );
-        if ( localStorage.getItem( 'allUsers' ) ) {
-          this.messaging.onSuccess( 'User: ' + userModel.email + ' was registered successfully!' );
-          observer.next( 'User: ' + userModel.email + ' was registered successfully!' );
-        } else {
-          this.messaging.onError( 'User: ' + userModel.email + ' failed to register' );
-          observer.error( 'User: ' + userModel.email + ' failed to register.' );
-        }
-      }, 1000 );
-    } );
+    return this.http.post( 'http://localhost:8000/users/new', userModel );
 
-    return 1;
+    //this.registerObservable = Observable.create( ( observer: Observer<string> ) => {
+    //  setTimeout( () => {
+    //    this.allUsers.push( userModel );
+    //    let locStUsers = JSON.stringify( this.allUsers );
+    //    localStorage.setItem( 'allUsers', locStUsers );
+    //    if ( localStorage.getItem( 'allUsers' ) ) {
+    //      this.messaging.onSuccess( 'User: ' + userModel.email + ' was registered successfully!' );
+    //      observer.next( 'User: ' + userModel.email + ' was registered successfully!' );
+    //    } else {
+    //      this.messaging.onError( 'User: ' + userModel.email + ' failed to register' );
+    //      observer.error( 'User: ' + userModel.email + ' failed to register.' );
+    //    }
+    //  }, 1000 );
+    //} );
+
+    //return 1;
+  }
+
+  addNewUser ( user ) {
+    this.allUsers.push( user );
   }
 
   onSave ( id: string, name: string, email: string, password: string, role: string, token: string ) {
     let user = this.allUsers.filter( ( usr ) => {
-      return ( usr.id === id );
+      return ( usr.id === parseInt( id ) );
     } )[0];
 
     user.name     = name;
@@ -185,9 +162,13 @@ export class UserStoreService {
       this.currentUser = user;
     }
 
-    let locStUsers = JSON.stringify( this.allUsers );
-    localStorage.setItem( 'allUsers', locStUsers ); 
-    this.messaging.onSuccess( 'User ' + user.email + ' edited successfully!' );
+
+    this.http.post( 'http://localhost:8000/users/' + id +  '/update', user  )
+      .subscribe( response => {
+        if ( response && response[ 'status' ] === 'ok' ) {
+          this.messaging.onSuccess( 'User ' + user.email + ' edited successfully!' );
+        }
+      } );
   }
 
   onDelete ( id: string ) {
@@ -263,54 +244,19 @@ export class UserStoreService {
 
   //LOCATION
   onLocationSave ( model ) {
-    let allLocationsArray = this.getAllLocations( model );
-    this.saveLocations( allLocationsArray );
-
-    return { status: 1, model: model };
-  }
-
-  saveLocations ( allLocationsArray ) {
-    localStorage.setItem( 'allLocations', JSON.stringify( allLocationsArray ) );
-  }
-
-  getAllLocations ( model ) {
-    let localStorageArray     = [];
-    let localStorageLocations = localStorage.getItem( 'allLocations' );
-
-    if ( localStorageLocations ) {
-      localStorageArray = JSON.parse( localStorageLocations );
-    } 
-
-    if ( model.id ) {
-      let editedOne = localStorageArray.filter( ( el ) => {
-        return ( el.id === model.id );
-      } )[ 0 ];
-
-      for ( let i in model ) {
-        if ( !i ) continue;
-        editedOne[ i ] = model[ i ];
-      }
-
-    } else {
-      model.id = ( localStorageArray.length + 1 ).toString();
-
-      localStorageArray.push( model );
-    }
-
-    return localStorageArray;
+    return this.http.post( 
+      'http://localhost:8000/locations/' 
+      + model.id
+      + '/update'
+      ,
+      model
+    );
   }
 
   onGetAllLocations () {
     let localStorageArray     = [];
-    let localStorageLocations = localStorage.getItem( 'allLocations' );
 
-    if ( localStorageLocations ) {
-      localStorageArray = JSON.parse( localStorageLocations );
-
-      return localStorageArray;
-    } 
-
-    return [];
+    return this.http.get( 'http://localhost:8000/locations/all' );
   }
 
   locationSelected: number = 0;

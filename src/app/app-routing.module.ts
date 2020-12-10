@@ -7,6 +7,7 @@ import { ContainersComponent       } from './components/containers/containers.co
 import { UsersComponent            } from './components/users/users.component';
 import { ItemComponent             } from './components/item/item.component';
 import { LocationsComponent        } from './components/locations/locations.component';
+import { LocationsPrivateComponent } from './components/locations/locations-private/locations-private.component';
 import { HomeComponent             } from './components/home/home.component';
 
 import { AuthGuard                 } from './services/auth-guard.service';
@@ -15,6 +16,7 @@ import { LocationGuard             } from './services/location-guard.service';
 
 const routes: Routes = [
   { path: '',                   component: HomeComponent                                                   },
+  { path: 'locations/private',  canActivate: [ AuthGuard ], component: LocationsPrivateComponent           },
   { path: 'containers/private', canActivate: [ AuthGuard, LocationGuard ], component: ContainersComponent  },
   { path: 'usersEdit',          canActivate: [ AdminGuard ], component: UsersComponent                     },
   { path: 'login',              component: LoginFormComponent                                              },

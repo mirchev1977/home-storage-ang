@@ -23,32 +23,24 @@ export class RegistrationFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  registerObservable: Subscription;
-  logInObservable:    Subscription;
   onRegister () {
     let nextId = this.userStore.allUsers.length;
     nextId++;
     let model = new UserModel( nextId.toString(), this.name, this.email, this.password, 'user', '1234' );
 
-    if ( !this.userStore.register( model ) ) {
-      return;
+    let observable = this.userStore.register( model );
+
+    if ( observable ) {
+      observable.subscribe( response => {
+        this.userStore.addNewUser( response );
+        this.userStore.logIn( response[ 'email' ], response[ 'password' ] ).subscribe( ( data: string ) => {
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
+        }, ( error: string ) => { 
+          console.log( error );
+          debugger;
+        } ); 
+      } );
     }
-    this.registerObservable = this.userStore.registerObservable.subscribe(
-      ( data: string ) => { 
-        //this.router.navigate( [ '/' ], { relativeTo: this.route } );
-      },
-      ( error: string ) => { console.log( error ) } 
-    );
-
-
-    this.userStore.logIn( model.email, model.password ); 
-
-    this.logInObservable =  this.userStore.logInObservable.subscribe( 
-      ( data: string ) => { 
-        this.router.navigate( [ '/' ], { relativeTo: this.route } );
-      },
-      ( error: string ) => { console.log( error ) } 
-    );
   }
 
   onKeyDownEvent ( event ) {

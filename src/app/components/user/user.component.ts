@@ -33,7 +33,7 @@ export class UserComponent implements OnInit {
   }
 
   onSave ( event ) {
-    event.preventDefault()
+    event.preventDefault();
     let resp = prompt( 'SAVE? ARE YOU SURE? [yes/n]' );
 
     if ( !resp.match( /yes|YES/i ) ) {

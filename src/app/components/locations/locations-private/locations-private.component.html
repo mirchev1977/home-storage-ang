@@ -1,5 +1,5 @@
 <div *ngIf="!storeService.locationSelected">
-  <app-locations [privacy]="'public'"></app-locations>
+  <app-locations [privacy]="'private'"></app-locations>
 </div>
 <div *ngIf="storeService.locationSelected">
   <app-containers></app-containers>

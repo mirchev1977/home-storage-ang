@@ -106,13 +106,15 @@
            (click)="onSelect()"
            style="height: 50px;">{{getValue( label.name )}}</button>
       <span *ngIf="label.name === 'Privacy'">
-        <button
-             id="new_location"
-             [ngClass]="appendClasses( 'new_location' )"
-             (click)="onCreateNew()"
-             style="height: 50px;">New</button>
-        <button class="btn btn-primary col-2 ml-1" (click)="onEdit()" 
-          style="height: 50px;">Edit</button>
+        <div *ngIf="storeService.userLoggedIn">
+          <button
+               id="new_location"
+               [ngClass]="appendClasses( 'new_location' )"
+               (click)="onCreateNew()"
+               style="height: 50px;">New</button>
+          <button class="btn btn-primary col-2 ml-1" (click)="onEdit()" 
+            style="height: 50px;">Edit</button>
+        </div>
       </span>
     </span>
   </div>

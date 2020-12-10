@@ -8,16 +8,18 @@
         </div>
       </div>
     </div>
-    <div *ngIf="userStore.userLoggedIn">
-      <button 
-        class="btn btn-primary col-2 mx-1 py-2" 
-        (click)="onCreateNew( 'from_existing' )">NEW</button>
-      <button 
-        class="btn btn-primary col-2 mx-1 py-2" 
-        (click)="onEdit()">Edit</button>
-      <button 
-        class="btn btn-info col-3 mx-1 py-2" 
-        (click)="onItemNew()">{{ newItemLabel }}</button>
+    <div class="mt-2">
+      <span *ngIf="userStore.userLoggedIn">
+        <button 
+          class="btn btn-primary col-2 mx-1 py-2" 
+          (click)="onCreateNew( 'from_existing' )">NEW</button>
+        <button 
+          class="btn btn-primary col-2 mx-1 py-2" 
+          (click)="onEdit()">Edit</button>
+        <button 
+          class="btn btn-info col-3 mx-1 py-2" 
+          (click)="onItemNew()">{{ newItemLabel }}</button>
+      </span>
       <button 
         class="btn btn-info col-3 mx-1 py-2" 
         (click)="onGetItems()">{{ itemsButton }}</button>

@@ -37,8 +37,8 @@ export class ContainersComponent implements OnInit {
     if ( 
       ( ( privacy === 'private' ) || ( privacy === 'public' ) ) 
       && ( this.containerPrivate === true ) 
-      && ( creatorId === currentUserId )
-      && ( locationId === this.userStore.locationSelected )
+      && ( creatorId == currentUserId )
+      && ( locationId == this.userStore.locationSelected )
     ) {
       return true;
     }
@@ -46,7 +46,7 @@ export class ContainersComponent implements OnInit {
     if ( 
       ( privacy === 'public' ) 
       && ( this.containerPrivate === false ) 
-      && ( locationId === this.userStore.locationSelected )
+      && ( locationId == this.userStore.locationSelected )
     ) {
       return true;
     }
