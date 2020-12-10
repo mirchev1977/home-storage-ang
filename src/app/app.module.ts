@@ -19,8 +19,12 @@ import { UserComponent } from './components/user/user.component';
 import { UsersComponent } from './components/users/users.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { AdminGuard } from './services/admin-guard.service';
+import { LocationGuard } from './services/location-guard.service';
 import { ContainerComponent } from './components/container/container.component';
 import { ContainersComponent } from './components/containers/containers.component';
+import { LocationsComponent } from './components/locations/locations.component';
+import { LocationComponent } from './components/location/location.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -34,14 +38,17 @@ import { ContainersComponent } from './components/containers/containers.componen
     UserComponent,
     UsersComponent,
     ContainerComponent,
-    ContainersComponent
+    ContainersComponent,
+    LocationsComponent,
+    LocationComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
   ],
-  providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard ],
+  providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard, LocationGuard ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

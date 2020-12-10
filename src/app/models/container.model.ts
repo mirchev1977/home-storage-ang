@@ -6,8 +6,10 @@ export class ContainerModel {
     public description: string,
     public items:       string,
     public privacy:     string,
+    public vertical:    string,
     public url:         string, 
     public creator:     string,
+    public location:    number,
     public coords:      CoordsModel,
   ) {}
 }

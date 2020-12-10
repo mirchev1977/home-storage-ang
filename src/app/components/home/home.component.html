@@ -1,0 +1,6 @@
+<div *ngIf="!storeService.locationSelected">
+  <app-locations></app-locations>
+</div>
+<div *ngIf="storeService.locationSelected">
+  <app-containers></app-containers>
+</div>

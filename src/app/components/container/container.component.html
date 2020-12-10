@@ -1,7 +1,7 @@
 <div *ngIf="!isNew" class="alert alert-warning" style="border: 1px solid lightblue;">
   <div *ngIf="!inputMode">
     <div *ngFor="let label of labels; let i = index">
-      <div class="alert col-11" *ngIf=" label.name !== 'ImgLink'">
+      <div class="col-11" *ngIf=" label.name !== 'ImgLink'">
         <div *ngIf="label.name !== 'Items'"><strong>{{label.name}}:</strong> {{getValue( label.name )}}</div>
         <div *ngIf="label.name === 'Items'" style="max-height: 250px; overflow: auto;">
           <strong>{{label.name}}:</strong> {{getValue( label.name )}}
@@ -20,7 +20,7 @@
         (click)="onItemNew()">{{ newItemLabel }}</button>
       <button 
         class="btn btn-info col-3 mx-1 py-2" 
-        (click)="getItems()">{{ itemsButton }}</button>
+        (click)="onGetItems()">{{ itemsButton }}</button>
     </div>
   </div>
   <div *ngIf="itemNew" class="alert alert-secondary mt-2">
@@ -31,6 +31,9 @@
   <div *ngIf="itemsOpened" class="alert alert-secondary mt-2 col-10 offset-1" style="max-height: 500px; overflow: auto;">
     <div *ngFor="let item of allItemsArray; let i = index">
       <app-item 
+        (itemDeleted)="onItemDeleted($event)"
+        (itemEdited)="onItemEdited($event)"
+        [id]="item.id"
         [description]="item.description"
         [imgUrl]="item.imageUrl"
         [isNew]="false" 
@@ -46,10 +49,20 @@
         <input class="form-control col-8 clear-both" type="text" value="{{getValue( label.name )}}" 
           id="{{label.name}}" (input)="onInput( $event )" style="height: 50px;" />
       </div>
-      <div class="form-group" *ngIf="label.type === 'select'">
+      <div class="form-group" *ngIf="( label.type === 'select' ) && ( label.name === 'Privacy' )">
         <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
         <select id="{{label.name}}" class="form-control col-8" style="height: 50px;" (change)="onPrivacySelect( $event )" >
-          <option value="{{option|lowercase}}" *ngFor="let option of label.options" [selected]="checkIfSelected( option )">{{option}}</option>
+          <option 
+          [selected]="checkIfSelected( option )"
+          value="{{option|lowercase}}" *ngFor="let option of label.options">{{option}}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="( label.type === 'select' ) && ( label.name === 'Vertical' )">
+        <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
+        <select id="{{label.name}}" class="form-control col-8" style="height: 50px;" (change)="onVerticalSelect( $event )" >
+          <option 
+          [selected]="checkIfSelected( option )"
+          value="{{option|lowercase}}" *ngFor="let option of label.options">{{option}}</option>
         </select>
       </div>
     </div>
@@ -110,10 +123,20 @@
         <input class="form-control col-8 clear-both" type="text" 
           id="{{label.name}}" (input)="onInput( $event )" style="height: 50px;" /> 
       </div>
-      <div class="form-group" *ngIf="label.type === 'select'">
+      <div class="form-group" *ngIf="( label.type === 'select' ) && ( label.name === 'Privacy' )">
         <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
         <select id="{{label.name}}" class="form-control col-8" style="height: 50px;" (change)="onPrivacySelect( $event )" >
-          <option value="{{option|lowercase}}" *ngFor="let option of label.options">{{option}}</option>
+          <option 
+          [selected]="checkIfSelected( option )"
+          value="{{option|lowercase}}" *ngFor="let option of label.options">{{option}}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="( label.type === 'select' ) && ( label.name === 'Vertical' )">
+        <label for="{{label.name}}" class="float-left col-3 alert alert-info mx-1 text-center" style="height: 50px;">{{label.name}}</label>
+        <select id="{{label.name}}" class="form-control col-8" style="height: 50px;" (change)="onVerticalSelect( $event )" >
+          <option 
+          [selected]="checkIfSelected( option )"
+          value="{{option|lowercase}}" *ngFor="let option of label.options">{{option}}</option>
         </select>
       </div>
     </div>

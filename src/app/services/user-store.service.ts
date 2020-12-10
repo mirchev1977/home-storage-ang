@@ -67,12 +67,12 @@ export class UserStoreService {
     });
   }
 
-  loadLocations() {
+  loadContainers() {
     let lsContainers = localStorage.getItem( 'allContainers');
 
     if ( lsContainers ) {
       this.allContainers = JSON.parse( lsContainers );
-      this.messaging.onSuccess( 'Locations loaded sucessfully!' );
+      this.messaging.onSuccess( 'Containers loaded sucessfully!' );
     }
   }
 
@@ -208,6 +208,7 @@ export class UserStoreService {
   }
 
 
+  //CONTAINER
   onSaveContainer ( container: ContainerModel ) {
     let lsContainers = localStorage.getItem( 'allContainers');
 
@@ -258,5 +259,62 @@ export class UserStoreService {
     }
 
     localStorage.setItem( 'allContainers', JSON.stringify( containers ) );
+  }
+
+  //LOCATION
+  onLocationSave ( model ) {
+    let allLocationsArray = this.getAllLocations( model );
+    this.saveLocations( allLocationsArray );
+
+    return { status: 1, model: model };
+  }
+
+  saveLocations ( allLocationsArray ) {
+    localStorage.setItem( 'allLocations', JSON.stringify( allLocationsArray ) );
+  }
+
+  getAllLocations ( model ) {
+    let localStorageArray     = [];
+    let localStorageLocations = localStorage.getItem( 'allLocations' );
+
+    if ( localStorageLocations ) {
+      localStorageArray = JSON.parse( localStorageLocations );
+    } 
+
+    if ( model.id ) {
+      let editedOne = localStorageArray.filter( ( el ) => {
+        return ( el.id === model.id );
+      } )[ 0 ];
+
+      for ( let i in model ) {
+        if ( !i ) continue;
+        editedOne[ i ] = model[ i ];
+      }
+
+    } else {
+      model.id = ( localStorageArray.length + 1 ).toString();
+
+      localStorageArray.push( model );
+    }
+
+    return localStorageArray;
+  }
+
+  onGetAllLocations () {
+    let localStorageArray     = [];
+    let localStorageLocations = localStorage.getItem( 'allLocations' );
+
+    if ( localStorageLocations ) {
+      localStorageArray = JSON.parse( localStorageLocations );
+
+      return localStorageArray;
+    } 
+
+    return [];
+  }
+
+  locationSelected: number = 0;
+  onSelectLocation ( locationId ) {
+    this.locationSelected = locationId;
   }
 }

@@ -3,11 +3,11 @@
 </div>
 
 <div class="alert alert-primary">
-  <h2 class="lead">Locations</h2>
+  <h2 class="lead">Containers</h2>
 </div>
 <div *ngFor="let container of userStore.allContainers">
   <app-container 
-        *ngIf="displayContainer ( container.privacy, container.creator )"
+        *ngIf="displayContainer ( container.privacy, container.creator, container.location )"
         [isNew]="false"
         [inputMode]="false" 
         [id]="container.id" 
@@ -15,7 +15,9 @@
         [description]="container.description" 
         [items]="container.items" 
         [privacy]="container.privacy" 
+        [vertical]="container.vertical" 
         [url]="container.url" 
         [creator]="container.creator" 
-        [placeCoords]="container.coords"></app-container>
+        [placeCoords]="container.coords" 
+        [locationId]="container.location"></app-container>
 </div>

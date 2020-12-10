@@ -7,8 +7,11 @@ import { Router, ActivatedRoute     } from '@angular/router';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnInit {
-  @Output() itemSaved = new EventEmitter();
+  @Output() itemSaved   = new EventEmitter();
+  @Output() itemDeleted = new EventEmitter<number>(); 
+  @Output() itemEdited  = new EventEmitter<{ id: string, description: string, imgUrl: string }>(); 
 
+  @Input() id:          string;
   @Input() description: string;
   @Input() imgUrl:      string;
 
@@ -36,14 +39,27 @@ export class ItemComponent implements OnInit {
   }
 
   onSave () {
+
+    if ( this.id ) {
+      this.itemEdited.emit( {
+        id:          this.id,
+        description: this.description,
+        imgUrl:      this.imgUrl,
+      } );
+      return;
+    }
+
     let lsItems = localStorage.getItem( 'allItems' );
 
     let allItemsArray = [];
+    let nextId        = 1;
     if ( lsItems && lsItems.length > 0 )  {
       allItemsArray = JSON.parse( lsItems );
+      nextId = ( allItemsArray.length + 1 );
     }
 
     allItemsArray.push( {
+      id:          nextId,
       description: this.description,
       containerId: this.containerId,
       imageUrl:    this.imgUrl,
@@ -68,4 +84,12 @@ export class ItemComponent implements OnInit {
     };
   }
 
+  deleteItem () {
+    this.itemDeleted.emit( Number( this.id ) );
+  }
+
+  editItem () {
+    this.isNew     = true;
+    this.inputMode = true; 
+  }
 }

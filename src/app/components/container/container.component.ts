@@ -15,16 +15,19 @@ export class ContainerComponent implements OnInit {
   @Input() description: string;
   @Input() items:       string;
   @Input() privacy:     string = "public";
+  @Input() vertical:    string = "";
   @Input() url:         string = 'https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg'; 
   @Input() creator:     string;
+  @Input() locationId:  number = 0;
 
   coordRows = [];
 
   labels = [
-    { name:  "Description", type: "text"                                     },
-    { name:  "Items",       type: "text"                                     },
-    { name:  "Privacy",     type: "select", options: [ 'Public', 'Private' ] },
-    { name:  "ImgLink",     type: "text"                                     },
+    { name:  "Description", type: "text"                                               },
+    { name:  "Vertical",    type: "select", options: [ '', 'Долу', 'Средата', 'Горе' ] },
+    { name:  "Items",       type: "text"                                               },
+    { name:  "Privacy",     type: "select", options: [ 'Public', 'Private' ]           },
+    { name:  "ImgLink",     type: "text"                                               },
   ];
 
 
@@ -60,7 +63,7 @@ export class ContainerComponent implements OnInit {
   checkIfSelected( option ) {
     let opt = option.toLowerCase();
 
-    if ( opt === this.privacy ) {
+    if ( ( opt === this.privacy ) || ( opt === this.vertical ) ) {
       return true;
     } else {
       return false;
@@ -166,8 +169,10 @@ export class ContainerComponent implements OnInit {
       this.description, 
       this.items,       
       this.privacy,     
+      this.vertical,     
       this.url,          
       this.userStore.currentUser.id,     
+      this.userStore.locationSelected,
       this.placeCoords,
     );
     this.userStore.onSaveContainer ( model );
@@ -194,8 +199,10 @@ export class ContainerComponent implements OnInit {
       this.description, 
       this.items,       
       this.privacy,     
+      this.vertical,     
       this.url,          
       this.userStore.currentUser.id,     
+      this.userStore.locationSelected,
       this.placeCoords,
     );
 
@@ -302,7 +309,13 @@ export class ContainerComponent implements OnInit {
     }
   }
 
-  getItems () {
+  onGetItems () {
+    if ( 
+      ( ! Array.isArray( this.allItemsArray ) ) 
+      || ( Array.isArray( this.allItemsArray ) && this.allItemsArray.length <= 0 )
+    ) {
+      return;
+    }
     this.itemsOpened = !this.itemsOpened;
 
     if ( this.itemsOpened ) {
@@ -311,6 +324,49 @@ export class ContainerComponent implements OnInit {
     } else {
       this.itemsButton = 'Items';
     }
+  }
+
+  onItemDeleted ( event ) { 
+    let itemId = event;
+
+    let allItems = localStorage.getItem( 'allItems' );
+
+    if ( allItems ) {
+      allItems = JSON.parse( allItems );
+      if ( Array.isArray( allItems ) ) {
+        let allItms = allItems.filter( ( itm ) => {
+          return ( itm.id !== itemId );
+        } );
+
+        localStorage.setItem( 'allItems', JSON.stringify( allItms ) );
+      }
+    }
+
+    this.getAllItems();
+  }
+
+  onItemEdited ( data ) {
+    let allItems = localStorage.getItem( 'allItems' );
+
+    if ( allItems ) {
+      allItems = JSON.parse( allItems );
+      if ( Array.isArray( allItems ) ) {
+        let itemFound = allItems.filter( ( itm ) => {
+          return ( itm.id === data.id );
+        } )[ 0 ];
+
+        itemFound.description = data.description;
+        itemFound.imgUrl      = data.imgUrl;
+
+        localStorage.setItem( 'allItems', JSON.stringify( allItems ) );
+
+        this.getAllItems();
+      }
+    }
+  }
+
+  onVerticalSelect ( event )  {
+    this.vertical = event.currentTarget.options[ event.currentTarget.options.selectedIndex ].value;
   }
 
 }

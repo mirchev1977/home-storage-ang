@@ -1,0 +1,16 @@
+<div *ngIf="allLocationsArray.length <= 0">
+  <h3>Create new Location</h3>
+  <app-location 
+    [isNew]="true" 
+    [isInputMode]="true"></app-location>
+</div>
+<div *ngFor="let loc of allLocationsArray; let i = index">
+  <app-location 
+    [id]="loc.id"
+    [location]="loc.location"
+    [privacy]="loc.privacy"
+    [imgUrl]="loc.imgUrl"
+    [creator]="loc.creator"
+    [isNew]="false" 
+    [isInputMode]="false"></app-location>
+</div>

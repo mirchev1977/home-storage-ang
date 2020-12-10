@@ -6,20 +6,23 @@ import { RegistrationFormComponent } from './common/registration-form/registrati
 import { ContainersComponent       } from './components/containers/containers.component';
 import { UsersComponent            } from './components/users/users.component';
 import { ItemComponent             } from './components/item/item.component';
+import { LocationsComponent        } from './components/locations/locations.component';
+import { HomeComponent             } from './components/home/home.component';
 
 import { AuthGuard                 } from './services/auth-guard.service';
 import { AdminGuard                } from './services/admin-guard.service';
+import { LocationGuard             } from './services/location-guard.service';
 
 const routes: Routes = [
-  { path: '',                  component: ContainersComponent                              },
-  { path: 'locations/private', canActivate: [ AuthGuard ],  component: ContainersComponent },
-  { path: 'usersEdit',         canActivate: [ AdminGuard ], component: UsersComponent      },
-  { path: 'login',             component: LoginFormComponent                               },
-  { path: 'register',          component: RegistrationFormComponent                        },
+  { path: '',                   component: HomeComponent                                                   },
+  { path: 'containers/private', canActivate: [ AuthGuard, LocationGuard ], component: ContainersComponent  },
+  { path: 'usersEdit',          canActivate: [ AdminGuard ], component: UsersComponent                     },
+  { path: 'login',              component: LoginFormComponent                                              },
+  { path: 'register',           component: RegistrationFormComponent                                       },
   
-  { path: 'item/:containerId/new',  component: ItemComponent                               },
+  { path: 'item/:containerId/new',  component: ItemComponent                                               },
 
-  { path: '**',  component: ContainersComponent                                            },
+  { path: '**',  component: ContainersComponent                                                            },
 ];
 
 @NgModule({

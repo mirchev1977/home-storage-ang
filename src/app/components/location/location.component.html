@@ -1,0 +1,119 @@
+<div *ngIf="isNew && isInputMode" class="alert alert-warning mx-1 my-1" style="border: 1px solid lightblue;">
+  <div *ngFor="let label of labels; let i = index">
+    <!-- start<000> -->
+    <div class="form-group" *ngIf="( label.type === 'text' )">
+      <label 
+         for="{{label.name}}" 
+         class="float-left col-3 alert alert-info mx-1 text-center" 
+         style="height: 50px;">{{label.name}}
+      </label>
+      <input 
+         class="form-control col-8 clear-both" 
+         type="text" value="{{getValue( label.name )}}" 
+         id="{{label.name}}" 
+         (input)="onInput( $event )" 
+         style="height: 50px;" />
+    </div>
+    <!-- end<000> -->
+    <!-- start<111> -->
+    <div 
+      class="form-group" 
+      *ngIf="( label.type === 'select' )">
+      <label 
+        for="{{label.name}}" 
+        class="float-left col-3 alert alert-info mx-1 text-center" 
+        style="height: 50px;">{{label.name}}
+      </label>
+      <select 
+        class="form-control col-8 clear-both" 
+        id="{{label.name}}" 
+        (change)="onChange( $event )" 
+        style="height: 50px;">
+        <option 
+          value="{{option|lowercase}}" 
+          *ngFor="let option of label.options; let i = index">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <!-- end<111> -->
+  </div>
+  <button class="btn btn-primary col-2 ml-1" (click)="onSave()">Save</button>
+  <div *ngIf="imgUrl" class="alert mt-2 text-center" style="height: 500px;">
+    <img src="{{ imgUrl }}" style="height: 100%;" class="col-xl-6 col-lg-7 col-md-9 col-sm-12"/>
+  </div>
+</div>
+
+<div *ngIf="!isNew && isInputMode" class="alert alert-warning mx-1 my-1" style="border: 1px solid lightblue;">
+  <div *ngFor="let label of labels; let i = index">
+    <!-- start<000> -->
+    <div class="form-group" *ngIf="( label.type === 'text' )">
+      <label 
+         for="{{label.name}}" 
+         class="float-left col-3 alert alert-info mx-1 text-center" 
+         style="height: 50px;">{{label.name}}
+      </label>
+      <input 
+         class="form-control col-8 clear-both" 
+         type="text" value="{{getValue( label.name )}}" 
+         id="{{label.name}}" 
+         (input)="onInput( $event )" 
+         style="height: 50px;" />
+    </div>
+    <!-- end<000> -->
+    <!-- start<111> -->
+    <div 
+      class="form-group" 
+      *ngIf="( label.type === 'select' )">
+      <label 
+        for="{{label.name}}" 
+        class="float-left col-3 alert alert-info mx-1 text-center" 
+        style="height: 50px;">{{label.name}}
+      </label>
+      <select 
+        class="form-control col-8 clear-both" 
+        id="{{label.name}}" 
+        (change)="onChange( $event )" 
+        style="height: 50px;">
+        <option 
+          *ngFor="let option of label.options; let i = index"
+          [selected]="onCheckIfSelected( option )"
+          value="{{option|lowercase}}">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+    <!-- end<111> -->
+  </div>
+  <button class="btn btn-primary col-2 ml-1" (click)="onSave()">Save</button>
+  <button class="btn btn-primary col-2 ml-1" (click)="onCancel()">Cancel</button>
+  <div *ngIf="imgUrl" class="alert mt-2 text-center" style="height: 500px;">
+    <img src="{{ imgUrl }}" style="height: 100%;" class="col-xl-6 col-lg-7 col-md-9 col-sm-12"/>
+  </div>
+</div>
+
+<div *ngIf="!isNew && !isInputMode" class="alert alert-warning mx-1 my-1" style="border: 1px solid lightblue;">
+  <div *ngFor="let label of labels; let i = index">
+    <span *ngIf="label.name !== 'ImgUrl'">
+      <label 
+         for="{{ label.name }}_normal" 
+         class="col-3 alert alert-info text-center" 
+         style="height: 50px;">{{ label.name }}
+      </label>
+      <button
+           id="{{ label.name }}_normal"
+           [ngClass]="appendClasses( label.name )"
+           (click)="onSelect()"
+           style="height: 50px;">{{getValue( label.name )}}</button>
+      <span *ngIf="label.name === 'Privacy'">
+        <button
+             id="new_location"
+             [ngClass]="appendClasses( 'new_location' )"
+             (click)="onCreateNew()"
+             style="height: 50px;">New</button>
+        <button class="btn btn-primary col-2 ml-1" (click)="onEdit()" 
+          style="height: 50px;">Edit</button>
+      </span>
+    </span>
+  </div>
+</div>

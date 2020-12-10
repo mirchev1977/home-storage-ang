@@ -22,14 +22,14 @@ export class ContainersComponent implements OnInit {
   ngOnInit() {
     if ( 
       ( this.route.snapshot.url.length > 0 ) 
-      && ( this.route.snapshot.url[ 0 ].path === 'locations' ) 
+      && ( this.route.snapshot.url[ 0 ].path === 'containers' ) 
       && ( this.route.snapshot.url[ 1 ].path === 'private' ) 
     ) {
       this.containerPrivate = true;
     }
   }
 
-  displayContainer ( privacy, creatorId ) {
+  displayContainer ( privacy, creatorId, locationId ) {
     if ( !privacy ) return false;
 
     var currentUserId = this.getCurrentUserId();
@@ -38,6 +38,7 @@ export class ContainersComponent implements OnInit {
       ( ( privacy === 'private' ) || ( privacy === 'public' ) ) 
       && ( this.containerPrivate === true ) 
       && ( creatorId === currentUserId )
+      && ( locationId === this.userStore.locationSelected )
     ) {
       return true;
     }
@@ -45,6 +46,7 @@ export class ContainersComponent implements OnInit {
     if ( 
       ( privacy === 'public' ) 
       && ( this.containerPrivate === false ) 
+      && ( locationId === this.userStore.locationSelected )
     ) {
       return true;
     }

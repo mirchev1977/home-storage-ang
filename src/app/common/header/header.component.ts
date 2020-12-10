@@ -38,4 +38,8 @@ export class HeaderComponent implements OnInit {
     return false;
   }
 
+  onChangeLocation () {
+    this.userStore.locationSelected = 0;
+  }
+
 }
