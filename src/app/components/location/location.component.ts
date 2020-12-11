@@ -59,8 +59,13 @@ export class LocationComponent implements OnInit {
     } )
       .subscribe( response => {
         if ( response[ 'status' ] === 'ok' ) {
+          this.id          = response[ 'locId' ];
           this.isNew       = false;
           this.isInputMode = false;
+        } else {
+          this.storeService.logOut();
+          this.router.navigate( [ '/login' ], { relativeTo: this.route } );
+          this.storeService.printErrorMessage( response[ 'msg' ] );
         }
       } )
     ;

@@ -16,14 +16,20 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor( private userStore: UserStoreService ) {}
 
   ngOnInit() {
-    this.userStore.loadUsers();
-    this.userStore.loadContainers();
-
-    this.loadUsersObservable =  this.userStore.loadUsersObservable.subscribe( 
-      ( data: string )  => {
-        console.log( data );
+    this.userStore.loadUsers().subscribe(
+      ( data )  => {
+        if ( data[ 'status' ] === 'ok' ) {
+          this.userStore.allUsers = data[ 'users' ];
+          this.userStore.printSuccessMessage( 'Users loaded successfully!' );
+        } else {
+          this.userStore.logOut();
+          this.userStore.printErrorMessage( 'Users cannot be loaded!' );
+        }
       },
+      ( err ) => { console.log( err ) }
     );
+
+    this.userStore.loadContainers();
   }
 
   ngOnDestroy() {

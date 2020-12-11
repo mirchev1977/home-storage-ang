@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserStoreService } from '../../services/user-store.service';
 import { MessagingService } from '../../services/messaging.service';
 import { UserModel } from '../../models/user.model';
@@ -21,7 +22,9 @@ export class UserComponent implements OnInit {
 
   constructor( 
     private userStore: UserStoreService, 
-    private messaging: MessagingService
+    private messaging: MessagingService,
+    private router: Router, 
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -41,7 +44,16 @@ export class UserComponent implements OnInit {
     }
       this.inputMode = false;
 
-      this.userStore.onSave( this.id, this.name, this.email, this.password, this.role, this.token );
+      this.userStore.onSave( this.id, this.name, this.email, this.password, this.role, this.token )
+      .subscribe( response => {
+        if ( response && response[ 'status' ] === 'ok' ) {
+          this.userStore.printSuccessMessage( 'User ' + this.email + ' edited successfully!' );
+        } else {
+          this.userStore.printErrorMessage( response[ 'msg' ] );
+          this.userStore.logOut();
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
+        }
+      } );
   }
 
   onDelete ( event ) {

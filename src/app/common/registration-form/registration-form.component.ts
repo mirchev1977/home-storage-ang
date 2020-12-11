@@ -24,23 +24,30 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   onRegister () {
-    let nextId = this.userStore.allUsers.length;
-    nextId++;
-    let model = new UserModel( nextId.toString(), this.name, this.email, this.password, 'user', '1234' );
+    let model = new UserModel( '0', this.name, this.email, this.password, 'user', '1234' );
 
-    let observable = this.userStore.register( model );
-
-    if ( observable ) {
-      observable.subscribe( response => {
-        this.userStore.addNewUser( response );
-        this.userStore.logIn( response[ 'email' ], response[ 'password' ] ).subscribe( ( data: string ) => {
+    this.userStore.register( model ).subscribe(( response => {
+        if ( !response || response[ 'status' ] !== 'ok' ) {
+          this.userStore.printErrorMessage( 'User: ' + model.email + ' failed to register' );
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
+          return;
+        }
+        this.userStore.logIn( this.email, this.password ).subscribe( ( data ) => {
+          this.userStore.currentUser = model;
+          this.userStore.userLoggedIn = true;
+          localStorage.setItem( 'loginToken', data[ 'token' ] );
+          localStorage.setItem( 'currentUser', JSON.stringify( data[ 'user' ] ) );
+          data[ 'user' ][ 'password' ] = model.password;
+          data[ 'user' ][ 'token'    ] = model.token;
+          this.userStore.addNewUser( data[ 'user' ] );
+          this.userStore.printSuccessMessage( 'User successfully logged in.' );
           this.router.navigate( [ '/' ], { relativeTo: this.route } );
         }, ( error: string ) => { 
+          this.userStore.printErrorMessage( 'User cannot log in. Please, try again later!' );
           console.log( error );
-          debugger;
         } ); 
-      } );
-    }
+      } )
+    );
   }
 
   onKeyDownEvent ( event ) {

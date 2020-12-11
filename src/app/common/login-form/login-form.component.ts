@@ -25,13 +25,14 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   onLogin () {
-    this.userStore.logIn( this.email, this.password ); 
-
-    if ( !this.userStore.logInObservable ) return;
-    this.logInObservable =  this.userStore.logInObservable.subscribe( 
-      ( data: string ) => { 
-        this.router.navigate( [ '/' ], { relativeTo: this.route } );
-      },
+    this.userStore.logIn( this.email, this.password ).subscribe( data => {
+      this.userStore.currentUser = data[ 'user' ];
+      this.userStore.userLoggedIn = true;
+      this.userStore.printSuccessMessage( 'User successfully logged in.' );
+      localStorage.setItem( 'loginToken', data[ 'token' ] );
+      localStorage.setItem( 'currentUser', JSON.stringify( data[ 'user' ] ) );
+      this.router.navigate( [ '/' ], { relativeTo: this.route } );
+    }, 
       ( error: string ) => { console.log( error ) } 
     );
   }

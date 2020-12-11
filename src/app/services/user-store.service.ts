@@ -4,6 +4,8 @@ import { MessagingService     } from './messaging.service';
 import { UserModel            } from '../models/user.model';
 import { ContainerModel       } from '../models/container.model';
 import { HttpClient           } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+
 
 @Injectable()
 export class UserStoreService {
@@ -20,21 +22,16 @@ export class UserStoreService {
   constructor( private messaging: MessagingService, private http: HttpClient ) {}
 
   loadUsers () {
-    if ( localStorage.getItem( 'userLoggedIn' ) ) {
+    if ( localStorage.getItem( 'loginToken' ) ) {
       this.currentUser = JSON.parse( localStorage.getItem( 'currentUser' ) );
       this.userLoggedIn = true;
     }
 
-      this.loadUsersObservable 
-          = Observable.create( ( observer: Observer<string> ) => {
-      this.messaging.onInfo( 'Loading users...' );
-      this.http.get( 'http://localhost:8000/users/all' )
-          .subscribe( responseData => {
-              this.allUsers = responseData;
-                this.messaging.onSuccess( 'Users successfully loaded!' );
-                observer.next( 'Users loaded successfully' );
-          } );
-    });
+    this.messaging.onInfo( 'Loading users...' );
+
+    return this.http.get( 'http://localhost:8000/users/all', { 
+      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+    } );
   }
 
   loadContainers() {
@@ -69,29 +66,21 @@ export class UserStoreService {
     }
 
     this.messaging.onInfo( 'Logging in...' );
-    this.logInObservable = Observable.create( ( observer: Observer<string> ) => {
-      setTimeout( () => {
-        let found = this.allUsers.filter( ( u ) => {
-          return ( ( u.email == email ) && ( u.password == password ) );
-        } );
 
-        if ( found && found.length > 0 ) {
-          this.currentUser = found[ 0 ];
-          this.userLoggedIn = true;
+    const credentials: { email: string, password: string } = {
+        email:    email,
+        password: password
+    };
 
-          localStorage.setItem( 'currentUser', JSON.stringify( this.currentUser ) );
-          localStorage.setItem( 'userLoggedIn', '1' );
+    return this.http.post( 
+      'http://localhost:8000/user/login', credentials
+    );
+  }
 
-          this.messaging.onSuccess( 'User successfully logged in.' );
-          observer.next( 'User successfully logged in.' );
-        } else {
-          this.messaging.onError( 'User cannot log in. Please, try again later!' );
-          observer.error( 'User cannot log in. Please, try again later!' );
-        }
-      }, 1000 );
+  logOut () {
+    return this.http.get( 'http://localhost:8000/user/logout', {
+      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
     } );
-
-    return this.logInObservable;
   }
 
   registerObservable;
@@ -124,23 +113,6 @@ export class UserStoreService {
     }
 
     return this.http.post( 'http://localhost:8000/users/new', userModel );
-
-    //this.registerObservable = Observable.create( ( observer: Observer<string> ) => {
-    //  setTimeout( () => {
-    //    this.allUsers.push( userModel );
-    //    let locStUsers = JSON.stringify( this.allUsers );
-    //    localStorage.setItem( 'allUsers', locStUsers );
-    //    if ( localStorage.getItem( 'allUsers' ) ) {
-    //      this.messaging.onSuccess( 'User: ' + userModel.email + ' was registered successfully!' );
-    //      observer.next( 'User: ' + userModel.email + ' was registered successfully!' );
-    //    } else {
-    //      this.messaging.onError( 'User: ' + userModel.email + ' failed to register' );
-    //      observer.error( 'User: ' + userModel.email + ' failed to register.' );
-    //    }
-    //  }, 1000 );
-    //} );
-
-    //return 1;
   }
 
   addNewUser ( user ) {
@@ -163,12 +135,9 @@ export class UserStoreService {
     }
 
 
-    this.http.post( 'http://localhost:8000/users/' + id +  '/update', user  )
-      .subscribe( response => {
-        if ( response && response[ 'status' ] === 'ok' ) {
-          this.messaging.onSuccess( 'User ' + user.email + ' edited successfully!' );
-        }
-      } );
+    return this.http.post( 'http://localhost:8000/users/' + id +  '/update', user, {
+      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+    }  );
   }
 
   onDelete ( id: string ) {
@@ -178,40 +147,27 @@ export class UserStoreService {
     }
 
     let users = this.allUsers.filter( ( usr ) => {
-      return ( usr.id !== id );
+      return ( usr.id.toString() !== id );
     } );
 
-    this.allUsers = users;
 
-    let locStUsers = JSON.stringify( this.allUsers );
-    localStorage.setItem( 'allUsers', locStUsers ); 
-    this.messaging.onSuccess( 'User deleted successfully!' );
+    this.http.get( 'http://localhost:8000/users/' + id + '/delete', {
+      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+    } ).subscribe( resp => {
+      this.allUsers = users;
+      this.messaging.onSuccess( 'User deleted successfully!' );
+    } );
   }
 
 
   //CONTAINER
   onSaveContainer ( container: ContainerModel ) {
-    let lsContainers = localStorage.getItem( 'allContainers');
-
-    if ( lsContainers ) {
-      this.allContainers = JSON.parse( lsContainers );
-    }
-
-    if ( this.allContainers.length <= 0 ) {
-      container.id = '1';
-    } else {
-      let len = this.allContainers.length;
-      len++;
-      container.id = len.toString();
-    }
-
-    this.allContainers.push( container );
-
-    localStorage.setItem( 'allContainers', 
-      JSON.stringify( this.allContainers ) );
-
-    this.allContainers = JSON.parse( 
-      localStorage.getItem( 'allContainers' )
+    return this.http.post( 
+      'http://localhost:8000/containers/new', 
+      container,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
     );
   }
 
@@ -244,12 +200,21 @@ export class UserStoreService {
 
   //LOCATION
   onLocationSave ( model ) {
+    let modelId = 0;
+
+    if ( model.id ) {
+      modelId = model.id;
+    }
+
     return this.http.post( 
       'http://localhost:8000/locations/' 
-      + model.id
+      + modelId
       + '/update'
       ,
-      model
+      model,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
     );
   }
 
@@ -262,5 +227,17 @@ export class UserStoreService {
   locationSelected: number = 0;
   onSelectLocation ( locationId ) {
     this.locationSelected = locationId;
+  }
+
+  printSuccessMessage( message ) {
+    this.messaging.onSuccess( message );
+  }
+
+  printErrorMessage( message ) {
+    this.messaging.onError( message );
+  }
+
+  printInfoMessage( message ) {
+    this.messaging.onInfo( message );
   }
 }

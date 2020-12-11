@@ -17,17 +17,20 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    let crntUsr = JSON.parse( localStorage.getItem( 'currentUser' ) );
-    localStorage.removeItem( 'currentUser' );
-    localStorage.removeItem( 'userLoggedIn' );
-    this.userStore.currentUser = null;
-    this.userStore.userLoggedIn = false;
-    setTimeout( () => {
-      this.messaging.onInfo( 'User ' + crntUsr.email + ' just logged out...' );
-      this.userStore.userLoggedIn = false;
-      this.userStore.currentUser  = null;
-      this.router.navigate( [ '/' ], { relativeTo: this.route } );
-    }, 1000 );
+    let crntUsr = this.userStore.currentUser;
+    this.userStore.logOut().subscribe( resp => {
+      if ( resp[ 'status' ] === 'ok' ) {
+        localStorage.removeItem( 'currentUser' );
+        localStorage.removeItem( 'loginToken' );
+        this.userStore.currentUser = null;
+        this.userStore.userLoggedIn = false;
+        this.messaging.onInfo( 'User ' + crntUsr.email + ' just logged out...' );
+
+        this.router.navigate( [ '/' ], { relativeTo: this.route } );
+      } else {
+        this.messaging.onError( 'User ' + crntUsr.email + ' could not log out...' );
+      }
+    } );
   }
 
   onCheckIfAdmin () {

@@ -175,12 +175,27 @@ export class ContainerComponent implements OnInit {
       this.userStore.locationSelected,
       this.placeCoords,
     );
-    this.userStore.onSaveContainer ( model );
-    this.inputMode = false;
+    this.userStore.onSaveContainer ( model ).subscribe(
+      resp => {
+        model.id = resp[ 'contId' ];
 
-    this.placeCoords.row = '';
-    this.placeCoords.col = '';
-    this.url             = 'https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg';
+        let lsContainers = localStorage.getItem( 'allContainers' );
+        this.userStore.allContainers = JSON.parse( lsContainers );
+
+        this.userStore.allContainers.push( model );
+
+        localStorage.setItem( 
+          'allContainers',
+          JSON.stringify( this.userStore.allContainers ) 
+        );
+
+        this.inputMode = false;
+        this.placeCoords.row = '';
+        this.placeCoords.col = '';
+        this.url             = 'https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg'; 
+      }
+    );
+
   }
 
   onSaveExisting () {
