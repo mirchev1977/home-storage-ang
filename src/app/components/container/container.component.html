@@ -83,6 +83,14 @@
       <button 
         class="btn btn-primary col-sm-2 col-3 my-2 py-3 ml-2" 
         (click)="onPaste()">PASTE</button>
+      <input
+        style="display: none"
+        accept="image/*"
+        type="file" (change)="onFileChanged($event)"
+        #fileInput>
+      <button 
+        class="btn btn-primary col-sm-2 col-3 my-2 py-3 ml-2" 
+        (click)="fileInput.click()">UPLOAD</button>
     </div>
 
     <div class="p-2 item-hl col-10 offset-1 mb-3 d-flex flex-column row-hl" [ngStyle]="onStyleImage()">

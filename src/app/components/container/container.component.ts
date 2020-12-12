@@ -380,7 +380,15 @@ export class ContainerComponent implements OnInit {
       itemFound.description = data.description;
       itemFound.imgUrl      = data.imgUrl;
     }
-    this.onUpdateItems(); 
+
+    //this.onUpdateItems(); 
+
+    this.userStore.getAllItems( this.id ).subscribe( resp => {
+      this.userStore.setAllItems( resp[ 'items' ] );
+      this.allItems = resp[ 'items' ];
+
+      //this.onUpdateItems(); 
+    } );
   }
 
   onVerticalSelect ( event )  {
@@ -430,6 +438,23 @@ export class ContainerComponent implements OnInit {
       debugger;
       console.log( err );
     });
+  }
+
+  onFileChanged ( event ) {
+    let reader = new FileReader();
+    reader.readAsDataURL( event.target.files[0] );
+    reader.onload = () => {
+      this.userStore.uploadFile( reader.result ).subscribe( resp => {
+        this.imgLink = resp[ 'img' ];
+        this.url     = resp[ 'img' ];
+      }, err => {
+        debugger;
+      } );
+    };
+    reader.onerror = function (error) {
+     console.log('Error: ', error);
+    };
+
   }
 
 }

@@ -3,16 +3,12 @@
   <div class="p-2 item-hl col-1">{{ id }}</div>
   <div class="p-2 item-hl col-2">{{ name }}</div>
   <div class="p-2 item-hl col-2">{{ email }}</div>
-  <div class="p-2 item-hl col-2">{{ password }}</div>
   <div class="p-2 item-hl col-2">{{ role }}</div>
-  <div class="p-2 item-hl col-2">{{ token }}</div>
 </div>
 
 <div class="d-flex align-items-center row-hl bg-light" *ngIf="inputMode" >
   <div class="p-2 item-hl col-1"><a href="#" (click)="onSave( $event )">SAVE</a></div>
   <div class="p-2 item-hl col-2"><input [(ngModel)]="name"type = "text" value="{{ name }}"     /></div>
   <div class="p-2 item-hl col-2"><input [(ngModel)]="email"type = "text" value="{{ email }}"    /></div>
-  <div class="p-2 item-hl col-2"><input [(ngModel)]="password"type = "text" value="{{ password }}" /></div>
   <div class="p-2 item-hl col-2"><input [(ngModel)]="role"type = "text" value="{{ role }}"     /></div>
-  <div class="p-2 item-hl col-2"><input [(ngModel)]="token"type = "text" value="{{ token }}"    /></div>
 </div>

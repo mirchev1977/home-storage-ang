@@ -29,14 +29,14 @@ export class UserStoreService {
 
     this.messaging.onInfo( 'Loading users...' );
 
-    return this.http.get( 'http://localhost:8000/users/all', { 
+    return this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/users/all', { 
       headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } );
   }
 
   loadContainers() {
     return this.http.get( 
-      'http://localhost:8000/containers/all?locationId=' + this.locationSelected  
+      'https://mirchev-home-storage-py.herokuapp.com/containers/all?locationId=' + this.locationSelected  
     );
   }
 
@@ -70,12 +70,12 @@ export class UserStoreService {
     };
 
     return this.http.post( 
-      'http://localhost:8000/user/login', credentials
+      'https://mirchev-home-storage-py.herokuapp.com/user/login', credentials
     );
   }
 
   logOut () {
-    return this.http.get( 'http://localhost:8000/user/logout', {
+    return this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/user/logout', {
       headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } );
   }
@@ -110,7 +110,7 @@ export class UserStoreService {
       return;
     }
 
-    return this.http.post( 'http://localhost:8000/users/new', userModel );
+    return this.http.post( 'https://mirchev-home-storage-py.herokuapp.com/users/new', userModel );
   }
 
   addNewUser ( user ) {
@@ -134,7 +134,7 @@ export class UserStoreService {
     }
 
 
-    return this.http.post( 'http://localhost:8000/users/' + id +  '/update', user, {
+    return this.http.post( 'https://mirchev-home-storage-py.herokuapp.com/users/' + id +  '/update', user, {
       headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     }  );
   }
@@ -151,7 +151,7 @@ export class UserStoreService {
     } );
 
 
-    this.http.get( 'http://localhost:8000/users/' + id + '/delete', {
+    this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/users/' + id + '/delete', {
       headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } ).subscribe( resp => {
       this.allUsers = users;
@@ -164,7 +164,7 @@ export class UserStoreService {
     this.searchTerm = searchTerm;
 
     return this.http.post( 
-      'http://localhost:8000/search/items', 
+      'https://mirchev-home-storage-py.herokuapp.com/search/items', 
       { searchTerm: searchTerm, locationId: locationId },
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
@@ -176,7 +176,7 @@ export class UserStoreService {
   //CONTAINER
   onSaveContainer ( container: ContainerModel ) {
     return this.http.post( 
-      'http://localhost:8000/containers/new', 
+      'https://mirchev-home-storage-py.herokuapp.com/containers/new', 
       container,
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
@@ -191,7 +191,7 @@ export class UserStoreService {
     } );
 
 
-    this.http.get( 'http://localhost:8000/container/' + contId + '/delete', {
+    this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/container/' + contId + '/delete', {
       headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } ).subscribe( resp => {
       if ( resp[ 'status' ] === 'ok' ) {
@@ -206,7 +206,7 @@ export class UserStoreService {
   onSaveExisting ( model ) {
 
     return this.http.post( 
-      'http://localhost:8000/container/' 
+      'https://mirchev-home-storage-py.herokuapp.com/container/' 
       + model.id
       + '/update'
       ,
@@ -227,7 +227,7 @@ export class UserStoreService {
     }
 
     return this.http.post( 
-      'http://localhost:8000/locations/' 
+      'https://mirchev-home-storage-py.herokuapp.com/locations/' 
       + modelId
       + '/update'
       ,
@@ -249,7 +249,7 @@ export class UserStoreService {
 
     let localStorageArray     = [];
 
-    return this.http.get( 'http://localhost:8000/locations/all' );
+    return this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/locations/all' );
   }
 
   locationSelected: number = 0;
@@ -276,7 +276,7 @@ export class UserStoreService {
   newItem ( item ) {
 
     return this.http.post( 
-      'http://localhost:8000/item/new',
+      'https://mirchev-home-storage-py.herokuapp.com/item/new',
       item,
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
@@ -287,7 +287,7 @@ export class UserStoreService {
   getAllItems ( contId ) {
     let searchTerm = this.searchTerm;
     
-    let url = 'http://localhost:8000/items/' + contId +'/all';
+    let url = 'https://mirchev-home-storage-py.herokuapp.com/items/' + contId +'/all';
 
     if ( searchTerm ) {
       url += '?searchTerm=' + searchTerm;
@@ -308,7 +308,7 @@ export class UserStoreService {
   deleteItem ( id ) {
 
     return this.http.get( 
-      'http://localhost:8000/item/' + id +'/delete',
+      'https://mirchev-home-storage-py.herokuapp.com/item/' + id +'/delete',
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
@@ -318,7 +318,7 @@ export class UserStoreService {
   updateItem ( id, item ) {
 
     return this.http.post( 
-      'http://localhost:8000/item/' + id +'/update',
+      'https://mirchev-home-storage-py.herokuapp.com/item/' + id +'/update',
       item,
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
@@ -328,6 +328,7 @@ export class UserStoreService {
 
   createLoginToken () {
     let currentUser = JSON.parse( localStorage.getItem( 'currentUser' ) );
+    if (!currentUser) currentUser = { 'email': 'default@default.com', 'role': 'admin' };
     let tokenArr = [
       localStorage.getItem( 'loginToken' ),
       currentUser[ 'email' ],
@@ -350,7 +351,7 @@ export class UserStoreService {
 
   copyItems ( dto ) {
     return this.http.post( 
-      'http://localhost:8000/items/paste',
+      'https://mirchev-home-storage-py.herokuapp.com/items/paste',
       dto,
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
@@ -364,7 +365,7 @@ export class UserStoreService {
 
   uploadFile ( fileBase64 ) {
     return this.http.post( 
-      'http://localhost:8000/items/uploadFile',
+      'https://mirchev-home-storage-py.herokuapp.com/items/uploadFile',
       { image: encodeURIComponent( fileBase64 ) },
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
