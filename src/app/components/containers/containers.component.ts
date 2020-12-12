@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserStoreService   } from '../../services/user-store.service';
 import { ContainerModel } from '../../models/container.model';
 import { MessagingService   } from '../../services/messaging.service';
@@ -10,7 +10,7 @@ import { Router, ActivatedRoute     } from '@angular/router';
   templateUrl: './containers.component.html',
   styleUrls: ['./containers.component.css']
 })
-export class ContainersComponent implements OnInit {
+export class ContainersComponent implements OnInit, OnDestroy {
   containerPrivate = false;
   allContainers = [];
 
@@ -23,6 +23,7 @@ export class ContainersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getSearchTerm();
     if ( 
       ( this.route.snapshot.url.length > 0 ) 
       && ( this.route.snapshot.url[ 0 ].path === 'containers' ) 
@@ -31,6 +32,12 @@ export class ContainersComponent implements OnInit {
       this.containerPrivate = true;
     }
 
+  }
+
+  ngOnDestroy () {
+    this.destroySearchTerm();
+    this.searchString = '';
+    this.search();
   }
 
   displayContainer ( privacy, creatorId, locationId ) {
@@ -112,4 +119,21 @@ export class ContainersComponent implements OnInit {
     return this.userStore;
   }
 
+  countItemsCopied () {
+    return Object.keys( this.userStore.getItemsCopied() ).length;
+  }
+
+  removeItemsCopied () {
+    this.userStore.setItemsCopied( {} );
+  } 
+
+  searchTerm: string = '';
+  getSearchTerm () {
+    this.searchTerm = this.userStore.searchTerm || '';
+  }
+
+  destroySearchTerm () {
+    this.searchTerm = '';
+    this.userStore.destroySearchTerm();
+  }
 }

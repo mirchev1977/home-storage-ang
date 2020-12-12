@@ -70,7 +70,7 @@
     </div>
     <div class="col-12"> 
       <button 
-        class="btn btn-primary col-2 col-2 offset-md-3 offset-lg-3 offset-xl-3 my-2 py-3" 
+        class="btn btn-primary col-2 col-2 my-2 py-3" 
         (click)="onSaveExisting()">SAVE</button>
 
       <button 
@@ -80,6 +80,9 @@
       <button 
         class="btn btn-primary col-sm-2 col-3 my-2 py-3 ml-2" 
         (click)="onDelete()">DELETE</button>
+      <button 
+        class="btn btn-primary col-sm-2 col-3 my-2 py-3 ml-2" 
+        (click)="onPaste()">PASTE</button>
     </div>
 
     <div class="p-2 item-hl col-10 offset-1 mb-3 d-flex flex-column row-hl" [ngStyle]="onStyleImage()">

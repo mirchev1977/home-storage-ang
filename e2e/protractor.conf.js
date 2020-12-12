@@ -12,7 +12,7 @@ exports.config = {
     'browserName': 'chrome'
   },
   directConnect: true,
-  baseUrl: 'https://mirchev-symfony.herokuapp.com',
+  baseUrl: 'https://mirchev-home-storage-sym.herokuapp.com',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

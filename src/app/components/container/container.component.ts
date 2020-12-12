@@ -100,18 +100,7 @@ export class ContainerComponent implements OnInit {
   allItems = [];
   ngOnInit() {
     if ( this && this.id ) {
-      this.userStore.getAllItems( this.id ).subscribe( resp => {
-        if ( resp[ 'status' ] === 'ok' ) {
-          this.allItems = resp[ 'items' ] || [];
-          this.onUpdateItems();
-          this.userStore.printSuccessMessage( 'Items loaded successfully.' );
-        } else {
-          this.userStore.printSuccessMessage( 'Items cannot be loaded.' );
-        }
-      }, err => {
-        debugger;
-        console.log( err );
-      });
+      this.getLocationItems();
     }
 
     for ( let i = 0; i < 50; i++ ) {
@@ -400,6 +389,47 @@ export class ContainerComponent implements OnInit {
 
   usrStore () {
     return this.userStore;
+  }
+
+  onPaste () {
+    let itemsCopiedIds = Object.keys( this.userStore.getItemsCopied() ) || [];
+    if ( itemsCopiedIds.length > 0 ) {
+      let dto = {
+        itemIds:     itemsCopiedIds,
+        containerId: this.id,
+        locationId:  this.locationId
+      };
+
+      this.userStore.copyItems( dto ).subscribe( resp => {
+        if ( resp[ 'status' ] === 'ok' ) {
+          this.userStore.setItemsCopied( {} );
+          this.userStore.printSuccessMessage( 'Items copied successfully!' );
+          this.onCancel();
+
+          this.getLocationItems(); 
+        } else {
+          this.userStore.printErrorMessage( 'Items cannot be copied!' );
+        }
+      }, err => {
+        this.userStore.printErrorMessage( 'Items cannot be copied!' );
+        console.log( err );
+      } );
+    }
+  }
+
+  getLocationItems () {
+    this.userStore.getAllItems( this.id ).subscribe( resp => {
+      if ( resp[ 'status' ] === 'ok' ) {
+        this.allItems = resp[ 'items' ] || [];
+        this.onUpdateItems();
+        this.userStore.printSuccessMessage( 'Items loaded successfully.' );
+      } else {
+        this.userStore.printSuccessMessage( 'Items cannot be loaded.' );
+      }
+    }, err => {
+      debugger;
+      console.log( err );
+    });
   }
 
 }

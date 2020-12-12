@@ -82,6 +82,7 @@ export class UserStoreService {
 
   registerObservable;
   register ( userModel: UserModel ) {
+
     if ( !userModel.email || !userModel.password  || !userModel.name) {
       this.messaging.onError( 'Please, do fill into all registration fields, please!' );
       return;
@@ -117,6 +118,7 @@ export class UserStoreService {
   }
 
   onSave ( id: string, name: string, email: string, password: string, role: string, token: string ) {
+
     let user = this.allUsers.filter( ( usr ) => {
       return ( usr.id === parseInt( id ) );
     } )[0];
@@ -138,6 +140,7 @@ export class UserStoreService {
   }
 
   onDelete ( id: string ) {
+
     if ( ( this.currentUser ) && ( id === this.currentUser.id ) ) {
       alert( "You cannot delete the currently logged user!" );
       return;
@@ -156,7 +159,10 @@ export class UserStoreService {
     } );
   }
 
+  searchTerm = '';
   search ( searchTerm, locationId ) {
+    this.searchTerm = searchTerm;
+
     return this.http.post( 
       'http://localhost:8000/search/items', 
       { searchTerm: searchTerm, locationId: locationId },
@@ -179,6 +185,7 @@ export class UserStoreService {
   }
 
   onContainerDelete ( contId ) {
+
     let remaining = this.allContainers.filter( ( cont ) => {
       return ( cont.id !== contId );
     } );
@@ -197,6 +204,7 @@ export class UserStoreService {
   }
 
   onSaveExisting ( model ) {
+
     return this.http.post( 
       'http://localhost:8000/container/' 
       + model.id
@@ -211,6 +219,7 @@ export class UserStoreService {
 
   //LOCATION
   onLocationSave ( model ) {
+
     let modelId = 0;
 
     if ( model.id ) {
@@ -230,6 +239,7 @@ export class UserStoreService {
   }
 
   onGetAllLocations () {
+
     let lsCopied = localStorage.getItem( 'copied' );
 
     if ( lsCopied ) {
@@ -264,6 +274,7 @@ export class UserStoreService {
   //ITEMS
   allItems = [];
   newItem ( item ) {
+
     return this.http.post( 
       'http://localhost:8000/item/new',
       item,
@@ -274,8 +285,16 @@ export class UserStoreService {
   }
 
   getAllItems ( contId ) {
+    let searchTerm = this.searchTerm;
+    
+    let url = 'http://localhost:8000/items/' + contId +'/all';
+
+    if ( searchTerm ) {
+      url += '?searchTerm=' + searchTerm;
+    }
+
     return this.http.get( 
-      'http://localhost:8000/items/' + contId +'/all',
+      url,
       {
         headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
@@ -287,6 +306,7 @@ export class UserStoreService {
   }
 
   deleteItem ( id ) {
+
     return this.http.get( 
       'http://localhost:8000/item/' + id +'/delete',
       {
@@ -296,6 +316,7 @@ export class UserStoreService {
   }
 
   updateItem ( id, item ) {
+
     return this.http.post( 
       'http://localhost:8000/item/' + id +'/update',
       item,
@@ -320,9 +341,34 @@ export class UserStoreService {
 
   setItemsCopied ( itemsCopied ) {
     this.itemsCopied = itemsCopied;
+    localStorage.setItem( 'copied', JSON.stringify( this.itemsCopied ) );
   }
 
   getItemsCopied () {
     return this.itemsCopied;
+  }
+
+  copyItems ( dto ) {
+    return this.http.post( 
+      'http://localhost:8000/items/paste',
+      dto,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      }
+    );
+  }
+
+  destroySearchTerm() {
+    this.searchTerm = '';
+  }
+
+  uploadFile ( fileBase64 ) {
+    return this.http.post( 
+      'http://localhost:8000/items/uploadFile',
+      { image: encodeURIComponent( fileBase64 ) },
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      }
+    );
   }
 }

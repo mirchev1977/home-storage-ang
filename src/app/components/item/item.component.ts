@@ -41,9 +41,8 @@ export class ItemComponent implements OnInit {
       this.containerId = this.route.snapshot.url[ 1 ].path;
     }
 
-    let itemsCopied = this.storeService.getItemsCopied();
 
-    if ( itemsCopied[ this.id ] ) {
+    if ( this.storeService.getItemsCopied()[ this.id ] ) {
       this.copyButtonClasses = "btn btn-warning col-3 ml-1";
     }
   }
@@ -157,7 +156,6 @@ export class ItemComponent implements OnInit {
 
       if ( locStor ) {
         this.storeService.setItemsCopied( locStor );
-        localStorage.setItem( 'copied', JSON.stringify( locStor ) );
       }
     } 
   }
@@ -165,4 +163,21 @@ export class ItemComponent implements OnInit {
   getCopyClasses  () {
     return this.copyButtonClasses;
   }
+
+  onFileChanged ( event ) {
+    let reader = new FileReader();
+    reader.readAsDataURL( event.target.files[0] );
+    reader.onload = () => {
+      this.storeService.uploadFile( reader.result ).subscribe( resp => {
+        this.imgUrl = resp[ 'img' ];
+      }, err => {
+        debugger;
+      } );
+    };
+    reader.onerror = function (error) {
+     console.log('Error: ', error);
+    };
+
+  }
+
 }
