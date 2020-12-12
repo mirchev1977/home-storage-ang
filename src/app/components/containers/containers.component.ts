@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserStoreService   } from '../../services/user-store.service';
+import { ContainerModel } from '../../models/container.model';
 import { MessagingService   } from '../../services/messaging.service';
 import { ContainerComponent } from '../container/container.component';
 import { Router, ActivatedRoute     } from '@angular/router';
@@ -11,6 +12,8 @@ import { Router, ActivatedRoute     } from '@angular/router';
 })
 export class ContainersComponent implements OnInit {
   containerPrivate = false;
+  allContainers = [];
+
 
   constructor(
     private router: Router,
@@ -27,6 +30,7 @@ export class ContainersComponent implements OnInit {
     ) {
       this.containerPrivate = true;
     }
+
   }
 
   displayContainer ( privacy, creatorId, locationId ) {
@@ -67,6 +71,41 @@ export class ContainersComponent implements OnInit {
 
   checkIfLoggedIn() {
     return this.userStore.userLoggedIn;
+  }
+
+  searchString: string = '';
+  onInput ( ev ) {
+    this.searchString = ev.currentTarget.value;
+  }
+
+  onKeyPressedDown ( ev ) {
+    if ( ev.code === 'Enter' ) {
+      this.search();
+    }
+  }
+
+  search () {
+    this.userStore.search( 
+      this.searchString, 
+      this.userStore.locationSelected 
+    ).subscribe( resp => {
+      if ( resp[ 'status' ] === 'ok' ) {
+        this.userStore.allContainers = resp[ 'containers' ];
+      } else {
+        this.userStore.printErrorMessage( resp[ 'msg' ] );
+        this.userStore.logOut().subscribe( resp => {
+          localStorage.removeItem( 'currentUser' );
+          localStorage.removeItem( 'loginToken' );
+          this.userStore.currentUser = null;
+          this.userStore.userLoggedIn = false;
+
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
+        });
+      }
+    }, err => {
+      console.log( err );
+      debugger;
+    } );
   }
 
 }

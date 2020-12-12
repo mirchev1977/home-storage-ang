@@ -35,12 +35,9 @@ export class UserStoreService {
   }
 
   loadContainers() {
-    let lsContainers = localStorage.getItem( 'allContainers');
-
-    if ( lsContainers ) {
-      this.allContainers = JSON.parse( lsContainers );
-      this.messaging.onSuccess( 'Containers loaded sucessfully!' );
-    }
+    return this.http.get( 
+      'http://localhost:8000/containers/all?locationId=' + this.locationSelected  
+    );
   }
 
   logInObservable;
@@ -159,6 +156,16 @@ export class UserStoreService {
     } );
   }
 
+  search ( searchTerm, locationId ) {
+    return this.http.post( 
+      'http://localhost:8000/search/items', 
+      { searchTerm: searchTerm, locationId: locationId },
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
+  }
+
 
   //CONTAINER
   onSaveContainer ( container: ContainerModel ) {
@@ -176,26 +183,30 @@ export class UserStoreService {
       return ( cont.id !== contId );
     } );
 
-    this.allContainers = remaining;
 
-    localStorage.setItem( 'allContainers', 
-      JSON.stringify( this.allContainers ) );
+    this.http.get( 'http://localhost:8000/container/' + contId + '/delete', {
+      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+    } ).subscribe( resp => {
+      if ( resp[ 'status' ] === 'ok' ) {
+        this.allContainers = remaining; 
+        this.messaging.onSuccess( 'Container deleted successfully!' );
+      } else {
+        this.messaging.onError( resp[ 'msg' ] );
+      }
+    } );
   }
 
   onSaveExisting ( model ) {
-    let containers = JSON.parse( localStorage.getItem( 'allContainers' ) );
-
-    let found = containers.filter( ( cont ) => {
-      return ( cont.id === model.id );
-    } )[ 0 ];
-
-    for ( let key in model ) {
-      if ( key === 'id' ) continue;
-
-      found[ key ] = model[ key ];
-    }
-
-    localStorage.setItem( 'allContainers', JSON.stringify( containers ) );
+    return this.http.post( 
+      'http://localhost:8000/container/' 
+      + model.id
+      + '/update'
+      ,
+      model,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
   }
 
   //LOCATION
@@ -225,8 +236,10 @@ export class UserStoreService {
   }
 
   locationSelected: number = 0;
-  onSelectLocation ( locationId ) {
+  locationName:     string = '';
+  onSelectLocation ( locationId, locationName ) {
     this.locationSelected = locationId;
+    this.locationName     = locationName;
   }
 
   printSuccessMessage( message ) {
@@ -239,5 +252,49 @@ export class UserStoreService {
 
   printInfoMessage( message ) {
     this.messaging.onInfo( message );
+  }
+
+  //ITEMS
+  allItems = [];
+  newItem ( item ) {
+    return this.http.post( 
+      'http://localhost:8000/item/new',
+      item,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
+  }
+
+  getAllItems ( contId ) {
+    return this.http.get( 
+      'http://localhost:8000/items/' + contId +'/all',
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
+  }
+
+  setAllItems ( allItems ) {
+    this.allItems = allItems || [];
+  }
+
+  deleteItem ( id ) {
+    return this.http.get( 
+      'http://localhost:8000/item/' + id +'/delete',
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
+  }
+
+  updateItem ( id, item ) {
+    return this.http.post( 
+      'http://localhost:8000/item/' + id +'/update',
+      item,
+      {
+        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      }
+    );
   }
 }

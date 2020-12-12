@@ -43,32 +43,57 @@ export class ItemComponent implements OnInit {
   onSave () {
 
     if ( this.id ) {
-      this.itemEdited.emit( {
+      this.storeService.updateItem( this.id, {
         id:          this.id,
         description: this.description,
-        imgUrl:      this.imgUrl,
+        imgUrl:      this.imgUrl
+      } ).subscribe( resp => {
+        if ( resp[ 'status' ] === 'ok' ) {
+          this.inputMode = false;
+          this.itemEdited.emit( {
+            id:          this.id,
+            description: this.description,
+            imgUrl:      this.imgUrl,
+          } );
+
+          this.storeService.printSuccessMessage( 'Item updated successfully' );
+        } else {
+          this.storeService.printErrorMessage( resp[ 'msg' ] );
+          this.storeService.logOut();
+        }
+      }, err => {
+        console.log( err );
+        debugger;
       } );
+
       return;
     }
 
-    let lsItems = localStorage.getItem( 'allItems' );
-
-    let allItemsArray = [];
-    let nextId        = 1;
-    if ( lsItems && lsItems.length > 0 )  {
-      allItemsArray = JSON.parse( lsItems );
-      nextId = ( allItemsArray.length + 1 );
-    }
-
-    allItemsArray.push( {
-      id:          nextId,
+    this.storeService.newItem( {
+      id:          this.id,
       description: this.description,
-      containerId: this.containerId,
-      imageUrl:    this.imgUrl,
-    } );
+      imgUrl:      this.imgUrl,
+      container:   this.containerId
+    } ).subscribe( response => {
+      if ( response[ 'status' ] === 'ok' ) {
+        this.storeService.printSuccessMessage( 'Item created!' );
+        let cont = {
+          id:          response[ 'id' ],
+          description: this.description,
+          containerId: this.containerId,
+          imgUrl:      this.imgUrl,
+        };
 
-    localStorage.setItem( 'allItems', JSON.stringify( allItemsArray ) ); 
-    this.itemSaved.emit();
+        this.storeService.allItems.push(  cont  );
+        this.itemSaved.emit();
+      } else {
+        this.storeService.printErrorMessage( response[ 'msg' ] );
+      }
+    }, ( error ) => {
+      console.log( error );
+      this.storeService.printErrorMessage( 'Container cannot be created!' );
+      debugger;
+    } ); 
   }
 
   onStyleImage () {
@@ -87,7 +112,17 @@ export class ItemComponent implements OnInit {
   }
 
   deleteItem () {
-    this.itemDeleted.emit( Number( this.id ) );
+    this.storeService.deleteItem( this.id ).subscribe( resp => {
+      if ( resp[ 'status' ] === 'ok' ) {
+        this.itemDeleted.emit( Number( this.id ) );
+        this.storeService.printSuccessMessage( 'Item deleted successfully!' );
+      } else {
+        this.storeService.printErrorMessage( 'Item cannot be deleted!' );
+      }
+    }, err => {
+      console.log( err );
+      debugger;
+    } );
   }
 
   editItem () {

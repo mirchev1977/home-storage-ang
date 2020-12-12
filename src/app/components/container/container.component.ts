@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ContainerModel } from '../../models/container.model';
 import { CoordsModel } from '../../models/coords.model';
 import { UserStoreService } from '../../services/user-store.service';
@@ -43,11 +44,11 @@ export class ContainerComponent implements OnInit {
   itemsButton: string = "Items";
   itemsOpened: boolean = false;
 
-  allItemsArray = [];
-
   constructor(
     private userStore: UserStoreService, 
     private messaging: MessagingService,
+    private router: Router, 
+    private route: ActivatedRoute
   ) { }
 
   onItemNew () {
@@ -85,9 +86,9 @@ export class ContainerComponent implements OnInit {
 
   onUpdateItems () {
     this.getAllItems();
-    if ( this.allItemsArray.length > 0 ) {
+    if ( Array.isArray( this.allItems ) && this.allItems.length > 0 ) {
       let itemsDescr = [];
-      for ( let itm of this.allItemsArray ) {
+      for ( let itm of this.allItems ) {
         itemsDescr.push( itm.description );
       }
       this.items = itemsDescr.join( ';; ' );
@@ -96,8 +97,22 @@ export class ContainerComponent implements OnInit {
     }
   }
 
+  allItems = [];
   ngOnInit() {
-    this.onUpdateItems();
+    if ( this && this.id ) {
+      this.userStore.getAllItems( this.id ).subscribe( resp => {
+        if ( resp[ 'status' ] === 'ok' ) {
+          this.allItems = resp[ 'items' ] || [];
+          this.onUpdateItems();
+          this.userStore.printSuccessMessage( 'Items loaded successfully.' );
+        } else {
+          this.userStore.printSuccessMessage( 'Items cannot be loaded.' );
+        }
+      }, err => {
+        debugger;
+        console.log( err );
+      });
+    }
 
     for ( let i = 0; i < 50; i++ ) {
       let arrRow = [];
@@ -165,7 +180,7 @@ export class ContainerComponent implements OnInit {
     if ( !this.placeCoords.col ) return;
     let model = new ContainerModel(
       this.id,
-      this.imgLink,     
+      this.imgLink || '',     
       this.description, 
       this.items,       
       this.privacy,     
@@ -175,24 +190,20 @@ export class ContainerComponent implements OnInit {
       this.userStore.locationSelected,
       this.placeCoords,
     );
+
     this.userStore.onSaveContainer ( model ).subscribe(
       resp => {
         model.id = resp[ 'contId' ];
 
-        let lsContainers = localStorage.getItem( 'allContainers' );
-        this.userStore.allContainers = JSON.parse( lsContainers );
+        var jsonModel = JSON.stringify( model );
+        this.userStore.allContainers.push( JSON.parse( jsonModel ) );
 
-        this.userStore.allContainers.push( model );
-
-        localStorage.setItem( 
-          'allContainers',
-          JSON.stringify( this.userStore.allContainers ) 
-        );
-
-        this.inputMode = false;
+        this.inputMode       = false;
         this.placeCoords.row = '';
         this.placeCoords.col = '';
+        this.vertical        = '';
         this.url             = 'https://www.nakshewala.com/map/page_images/large/img56b43921977763D_floor_planL.jpg'; 
+        this.router.navigate( [ '/containers/private' ], { relativeTo: this.route } );
       }
     );
 
@@ -210,7 +221,7 @@ export class ContainerComponent implements OnInit {
 
     let model = new ContainerModel(
       this.id,
-      this.imgLink,     
+      this.imgLink || '',     
       this.description, 
       this.items,       
       this.privacy,     
@@ -221,12 +232,14 @@ export class ContainerComponent implements OnInit {
       this.placeCoords,
     );
 
-    this.userStore.onSaveExisting ( model );
-    this.inputMode = false;
-
-    this.userStore.allContainers = JSON.parse(
-      localStorage.getItem( 'allContainers' )
-    );
+    this.userStore.onSaveExisting ( model )
+      .subscribe( response => {
+        this.inputMode = false;
+        if ( response[ 'status' ] !== 'ok' ) {
+          this.userStore.logOut();
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
+        }
+      } );
   }
 
   onCoordCatch( event ) {
@@ -289,8 +302,17 @@ export class ContainerComponent implements OnInit {
   onDelete () {
     if ( this.isNew ) return true;
 
-    if ( !this.userStore.currentUser    ) return;
-    if ( !this.userStore.currentUser.id ) return;
+    if ( !this.id ) {
+      this.userStore.printErrorMessage( 'You cannot delete the container.' );
+      this.userStore.logOut();
+      return;
+    }
+
+    if ( !this.userStore.currentUser || !this.userStore.currentUser.id ) {
+      this.userStore.printErrorMessage( 'You cannot delete the container. You are not authorized.' );
+      this.userStore.logOut();
+      return;
+    }
 
     if ( this.creator !== this.userStore.currentUser.id ) return;
 
@@ -311,73 +333,65 @@ export class ContainerComponent implements OnInit {
     this.onUpdateItems();
   }
 
-  getAllItems () {
-    let allItems = localStorage.getItem( 'allItems' );
-
-    if ( allItems ) {
-      allItems = JSON.parse( allItems );
-      if ( Array.isArray( allItems ) ) {
-        this.allItemsArray = allItems.filter( ( itm ) => {
-          return ( itm.containerId === this.id );
-        } );
-      }
-    }
+  getAllItems () { //marker_002
+    return this.userStore.allItems || [];
   }
 
-  onGetItems () {
-    if ( 
-      ( ! Array.isArray( this.allItemsArray ) ) 
-      || ( Array.isArray( this.allItemsArray ) && this.allItemsArray.length <= 0 )
-    ) {
-      return;
-    }
-    this.itemsOpened = !this.itemsOpened;
+  onGetItems () { //marker_001
+    this.userStore.getAllItems( this.id ).subscribe( resp => {
+      this.userStore.setAllItems( resp[ 'items' ] );
+      this.allItems = resp[ 'items' ];
+      this.onUpdateItems();
 
-    if ( this.itemsOpened ) {
-      this.itemsButton = 'Items - Close';
-      this.getAllItems();
-    } else {
-      this.itemsButton = 'Items';
-    }
+      this.itemsOpened = !this.itemsOpened;
+
+      if ( this.itemsOpened ) {
+        this.itemsButton = 'Items - Close';
+        this.getAllItems();
+      } else {
+        this.itemsButton = 'Items';
+      } 
+
+      if ( 
+        ( ! Array.isArray( this.allItems ) ) 
+        || ( Array.isArray( this.allItems ) && this.allItems.length <= 0 )
+      ) {
+        return;
+      }
+    }, err => {
+      console.log( err );
+      debugger;
+    } ); 
   }
 
   onItemDeleted ( event ) { 
     let itemId = event;
 
-    let allItems = localStorage.getItem( 'allItems' );
+    if ( ( Array.isArray( this.allItems ) ) && this.allItems.length > 0 ) {
+      let allItms = this.allItems.filter( ( itm ) => {
+        return ( itm.id !== itemId );
+      } );
 
-    if ( allItems ) {
-      allItems = JSON.parse( allItems );
-      if ( Array.isArray( allItems ) ) {
-        let allItms = allItems.filter( ( itm ) => {
-          return ( itm.id !== itemId );
-        } );
-
-        localStorage.setItem( 'allItems', JSON.stringify( allItms ) );
-      }
+      if ( allItms.length >= 0 ) {
+        this.allItems = allItms || [];
+        this.onUpdateItems();
+      } 
     }
-
-    this.getAllItems();
   }
 
   onItemEdited ( data ) {
-    let allItems = localStorage.getItem( 'allItems' );
-
-    if ( allItems ) {
-      allItems = JSON.parse( allItems );
-      if ( Array.isArray( allItems ) ) {
-        let itemFound = allItems.filter( ( itm ) => {
-          return ( itm.id === data.id );
-        } )[ 0 ];
-
-        itemFound.description = data.description;
-        itemFound.imgUrl      = data.imgUrl;
-
-        localStorage.setItem( 'allItems', JSON.stringify( allItems ) );
-
-        this.getAllItems();
-      }
+    let itemFound;
+    if ( Array.isArray( this.allItems ) ) {
+      itemFound = this.allItems.filter( ( itm ) => {
+        return ( itm.id === data.id );
+      } )[ 0 ];
     }
+
+    if ( itemFound ) {
+      itemFound.description = data.description;
+      itemFound.imgUrl      = data.imgUrl;
+    }
+    this.onUpdateItems(); 
   }
 
   onVerticalSelect ( event )  {

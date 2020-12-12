@@ -28,8 +28,6 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       ( err ) => { console.log( err ) }
     );
-
-    this.userStore.loadContainers();
   }
 
   ngOnDestroy() {

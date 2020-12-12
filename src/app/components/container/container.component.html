@@ -31,13 +31,13 @@
       [isNew]="true" [inputMode]="true" [containerId]="id"></app-item>
   </div>
   <div *ngIf="itemsOpened" class="alert alert-secondary mt-2 col-10 offset-1" style="max-height: 500px; overflow: auto;">
-    <div *ngFor="let item of allItemsArray; let i = index">
+    <div *ngFor="let item of allItems; let i = index">
       <app-item 
         (itemDeleted)="onItemDeleted($event)"
         (itemEdited)="onItemEdited($event)"
         [id]="item.id"
         [description]="item.description"
-        [imgUrl]="item.imageUrl"
+        [imgUrl]="item.imgUrl"
         [isNew]="false" 
         [inputMode]="false" 
         [containerId]="id"></app-item>

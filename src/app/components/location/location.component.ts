@@ -109,8 +109,14 @@ export class LocationComponent implements OnInit {
   }
 
   onSelect () {
-    this.storeService.onSelectLocation( this.id );
-    this.router.navigate( [ '/' ], { relativeTo: this.route } );
+    this.storeService.onSelectLocation( this.id, this.location );
+    this.storeService.loadContainers().subscribe( resp => {
+      if ( resp[ 'containers' ] ) {
+        this.storeService.allContainers = resp[ 'containers' ];
+        this.storeService.printSuccessMessage( 'Containers loaded sucessfully!' );
+        this.router.navigate( [ '/' ], { relativeTo: this.route } );
+      }
+    } );
   }
 
   onCancel () {
