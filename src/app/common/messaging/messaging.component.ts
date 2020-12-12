@@ -13,4 +13,15 @@ export class MessagingComponent implements OnInit {
   ngOnInit() {
   }
 
+  printSucces () {
+    return this.messaging.successMessage;
+  }
+
+  printError () {
+    return this.messaging.errorMessage;
+  }
+
+  printInfo () {
+    return this.messaging.infoMessage;
+  }
 }

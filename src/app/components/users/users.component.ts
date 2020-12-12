@@ -18,4 +18,8 @@ export class UsersComponent implements OnInit {
   ngOnInit() {
   }
 
+  usrStore () {
+    return this.userStore;
+  }
+
 }

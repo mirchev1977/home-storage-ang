@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserComponent } from './components/user/user.component';
 
@@ -13,7 +14,11 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
   loadUsersObservable: Subscription;
 
-  constructor( private userStore: UserStoreService ) {}
+  constructor( 
+    private router: Router, 
+    private route: ActivatedRoute,
+    private userStore: UserStoreService 
+  ) {}
 
   ngOnInit() {
     this.userStore.loadUsers().subscribe(
@@ -24,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
         } else {
           this.userStore.logOut();
           this.userStore.printErrorMessage( 'Users cannot be loaded!' );
+          this.router.navigate( [ '/' ], { relativeTo: this.route } );
         }
       },
       ( err ) => { console.log( err ) }

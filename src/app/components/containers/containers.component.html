@@ -3,11 +3,11 @@
 </div>
 
 <div class="alert alert-primary">
-  <h2 class="lead">{{userStore.locationName}} : Containers</h2>
+  <h2 class="lead">{{usrStore().locationName}} : Containers</h2>
   <input type="text" (keydown)="onKeyPressedDown( $event )" (input)="onInput( $event )" class="form-control col-9 float-left" id="search-inp" />
   <button (click)="search()" class="btn btn-primary col-2 mx-1" id="search-btn">Search</button>
 </div>
-<div *ngFor="let container of userStore.allContainers">
+<div *ngFor="let container of usrStore().allContainers">
   <app-container 
         *ngIf="displayContainer ( container.privacy, container.creator, container.location )"
         [isNew]="false"

@@ -21,6 +21,8 @@ export class ItemComponent implements OnInit {
 
   @Input() containerId: string;
 
+  copyButtonClasses = "btn btn-light col-3 ml-1";
+
   constructor(
     public storeService: UserStoreService,
     private router: Router,
@@ -37,6 +39,12 @@ export class ItemComponent implements OnInit {
       this.isNew     = true;
       this.inputMode = true;
       this.containerId = this.route.snapshot.url[ 1 ].path;
+    }
+
+    let itemsCopied = this.storeService.getItemsCopied();
+
+    if ( itemsCopied[ this.id ] ) {
+      this.copyButtonClasses = "btn btn-warning col-3 ml-1";
     }
   }
 
@@ -128,5 +136,33 @@ export class ItemComponent implements OnInit {
   editItem () {
     this.isNew     = true;
     this.inputMode = true; 
+  }
+
+  copyItem () {
+    let locStorInit = localStorage.getItem( 'copied' );
+
+    let locStor = {};
+    if ( locStorInit ) {
+      locStor = JSON.parse( locStorInit );
+    } 
+
+    if ( this.id ) {
+      if ( locStor[ this.id ] ) {
+        delete locStor[ this.id ];
+        this.copyButtonClasses = "btn btn-light col-3 ml-1";
+      } else {
+        locStor[ this.id ] = 1;
+        this.copyButtonClasses = "btn btn-warning col-3 ml-1";
+      }
+
+      if ( locStor ) {
+        this.storeService.setItemsCopied( locStor );
+        localStorage.setItem( 'copied', JSON.stringify( locStor ) );
+      }
+    } 
+  }
+
+  getCopyClasses  () {
+    return this.copyButtonClasses;
   }
 }

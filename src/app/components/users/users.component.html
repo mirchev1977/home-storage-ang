@@ -4,4 +4,4 @@
   email="{{ usr.email }}"
   password="{{ usr.password }}"
   role="{{ usr.role }}"
-  token="{{ usr.token }}" *ngFor="let usr of userStore.allUsers"></app-user>
+  token="{{ usr.token }}" *ngFor="let usr of usrStore().allUsers"></app-user>

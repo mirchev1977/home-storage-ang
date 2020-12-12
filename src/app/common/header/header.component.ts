@@ -45,4 +45,8 @@ export class HeaderComponent implements OnInit {
     this.userStore.locationSelected = 0;
   }
 
+  usrStore() {
+    return this.userStore;
+  }
+
 }

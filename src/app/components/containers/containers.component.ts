@@ -108,4 +108,8 @@ export class ContainersComponent implements OnInit {
     } );
   }
 
+  usrStore () {
+    return this.userStore;
+  }
+
 }

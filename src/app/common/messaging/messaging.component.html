@@ -1,11 +1,11 @@
-<div class="alert alert-success mb-0" *ngIf="messaging.displaySuccess" style="position: static;">
-  <strong>{{ messaging.successMessage }}</strong>
+<div class="alert alert-success mb-0" *ngIf="printSucces()" style="position: static;">
+  <strong>{{ printSucces() }}</strong>
 </div>
 
-<div class="alert alert-danger mb-0" *ngIf="messaging.displayError" style="position: static;">
-  <strong>{{ messaging.errorMessage }}</strong>
+<div class="alert alert-danger mb-0" *ngIf="printError()" style="position: static;">
+  <strong>{{ printError() }}</strong>
 </div>
 
-<div class="alert alert-info mb-0" *ngIf="messaging.displayInfo" style="position: static;">
-  <strong>{{ messaging.infoMessage }}</strong>
+<div class="alert alert-info mb-0" *ngIf="printInfo()" style="position: static;">
+  <strong>{{ printInfo() }}</strong>
 </div>

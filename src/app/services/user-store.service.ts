@@ -30,7 +30,7 @@ export class UserStoreService {
     this.messaging.onInfo( 'Loading users...' );
 
     return this.http.get( 'http://localhost:8000/users/all', { 
-      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } );
   }
 
@@ -76,7 +76,7 @@ export class UserStoreService {
 
   logOut () {
     return this.http.get( 'http://localhost:8000/user/logout', {
-      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } );
   }
 
@@ -133,7 +133,7 @@ export class UserStoreService {
 
 
     return this.http.post( 'http://localhost:8000/users/' + id +  '/update', user, {
-      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     }  );
   }
 
@@ -149,7 +149,7 @@ export class UserStoreService {
 
 
     this.http.get( 'http://localhost:8000/users/' + id + '/delete', {
-      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } ).subscribe( resp => {
       this.allUsers = users;
       this.messaging.onSuccess( 'User deleted successfully!' );
@@ -161,7 +161,7 @@ export class UserStoreService {
       'http://localhost:8000/search/items', 
       { searchTerm: searchTerm, locationId: locationId },
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -173,7 +173,7 @@ export class UserStoreService {
       'http://localhost:8000/containers/new', 
       container,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -185,7 +185,7 @@ export class UserStoreService {
 
 
     this.http.get( 'http://localhost:8000/container/' + contId + '/delete', {
-      headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
     } ).subscribe( resp => {
       if ( resp[ 'status' ] === 'ok' ) {
         this.allContainers = remaining; 
@@ -204,7 +204,7 @@ export class UserStoreService {
       ,
       model,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -224,12 +224,19 @@ export class UserStoreService {
       ,
       model,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
 
   onGetAllLocations () {
+    let lsCopied = localStorage.getItem( 'copied' );
+
+    if ( lsCopied ) {
+      let lsCopiedObj = JSON.parse( lsCopied ) || {};
+      this.setItemsCopied( lsCopiedObj );
+    }
+
     let localStorageArray     = [];
 
     return this.http.get( 'http://localhost:8000/locations/all' );
@@ -261,7 +268,7 @@ export class UserStoreService {
       'http://localhost:8000/item/new',
       item,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -270,7 +277,7 @@ export class UserStoreService {
     return this.http.get( 
       'http://localhost:8000/items/' + contId +'/all',
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -283,7 +290,7 @@ export class UserStoreService {
     return this.http.get( 
       'http://localhost:8000/item/' + id +'/delete',
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
   }
@@ -293,8 +300,29 @@ export class UserStoreService {
       'http://localhost:8000/item/' + id +'/update',
       item,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: localStorage.getItem( 'loginToken' ) } 
+        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
       }
     );
+  }
+
+  createLoginToken () {
+    let currentUser = JSON.parse( localStorage.getItem( 'currentUser' ) );
+    let tokenArr = [
+      localStorage.getItem( 'loginToken' ),
+      currentUser[ 'email' ],
+      currentUser[ 'role' ]
+    ];
+
+    return tokenArr.join( ';;' );
+  }
+
+  itemsCopied = {};
+
+  setItemsCopied ( itemsCopied ) {
+    this.itemsCopied = itemsCopied;
+  }
+
+  getItemsCopied () {
+    return this.itemsCopied;
   }
 }

@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="mt-2">
-      <span *ngIf="userStore.userLoggedIn">
+      <span *ngIf="usrStore().userLoggedIn">
         <button 
           class="btn btn-primary col-2 mx-1 py-2" 
           (click)="onCreateNew( 'from_existing' )">NEW</button>

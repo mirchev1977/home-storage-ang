@@ -398,4 +398,8 @@ export class ContainerComponent implements OnInit {
     this.vertical = event.currentTarget.options[ event.currentTarget.options.selectedIndex ].value;
   }
 
+  usrStore () {
+    return this.userStore;
+  }
+
 }
