@@ -1,2 +1,4 @@
 gitlog.txt
 .sw*
+.idea/
+node_modules/
