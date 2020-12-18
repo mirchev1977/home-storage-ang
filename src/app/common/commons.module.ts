@@ -10,8 +10,8 @@ import {MessagingComponent} from "./messaging/messaging.component";
 import {RegistrationFormComponent} from "./registration-form/registration-form.component";
 
 const routes: Routes = [
-    { path: '', component: LoginFormComponent       },
-    { path: '', component: RegistrationFormComponent },
+    { path: 'login', component: LoginFormComponent           },
+    { path: 'register', component: RegistrationFormComponent },
 ];
 @NgModule({
    declarations: [
