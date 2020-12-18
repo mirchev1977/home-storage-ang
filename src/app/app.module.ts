@@ -22,6 +22,7 @@ import { AdminGuard } from './services/admin-guard.service';
 import { LocationGuard } from './services/location-guard.service';
 import { HomeComponent } from './components/home/home.component';
 import {LocationsModule} from "./components/mod-locations/locations.module";
+import {ContainersModule} from "./components/mod-containers/containers.module";
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import {LocationsModule} from "./components/mod-locations/locations.module";
     FormsModule,
     HttpClientModule,
     LocationsModule,
+    ContainersModule,
   ],
   providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard, LocationGuard ],
   bootstrap: [AppComponent]

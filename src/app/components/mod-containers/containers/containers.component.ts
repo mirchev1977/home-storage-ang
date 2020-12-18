@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserStoreService   } from '../../services/user-store.service';
-import { ContainerModel } from '../../models/container.model';
-import { MessagingService   } from '../../services/messaging.service';
+import { UserStoreService   } from '../../../services/user-store.service';
+import { ContainerModel } from '../../../models/container.model';
+import { MessagingService   } from '../../../services/messaging.service';
 import { ContainerComponent } from '../container/container.component';
 import { Router, ActivatedRoute     } from '@angular/router';
 

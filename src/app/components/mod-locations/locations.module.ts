@@ -7,18 +7,13 @@ import {BrowserModule} from "@angular/platform-browser";
 import { HttpClientModule} from "@angular/common/http";
 import {RouterModule} from "@angular/router";
 import {LocationsPrivateComponent} from "./locations/locations-private/locations-private.component";
-import {ContainerComponent} from "../container/container.component";
-import {ContainersComponent} from "../containers/containers.component";
-import {ItemComponent} from "../item/item.component";
+import {ContainersModule} from "../mod-containers/containers.module";
 
 @NgModule({
     declarations: [
         LocationComponent,
         LocationsComponent,
         LocationsPrivateComponent,
-        ContainerComponent,
-        ContainersComponent,
-        ItemComponent,
     ],
     imports: [
         CommonModule,
@@ -26,14 +21,12 @@ import {ItemComponent} from "../item/item.component";
         BrowserModule,
         HttpClientModule,
         RouterModule,
+        ContainersModule,
     ],
     exports: [
         LocationsComponent,
         LocationComponent,
         LocationsPrivateComponent,
-        ContainerComponent,
-        ContainersComponent,
-        ItemComponent,
     ]
 })
 export class LocationsModule {}

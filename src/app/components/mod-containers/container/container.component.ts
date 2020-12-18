@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ContainerModel } from '../../models/container.model';
-import { CoordsModel } from '../../models/coords.model';
-import { UserStoreService } from '../../services/user-store.service';
-import { MessagingService } from '../../services/messaging.service';
+import { ContainerModel } from '../../../models/container.model';
+import { CoordsModel } from '../../../models/coords.model';
+import { UserStoreService } from '../../../services/user-store.service';
+import { MessagingService } from '../../../services/messaging.service';
 
 @Component({
   selector: 'app-container',
