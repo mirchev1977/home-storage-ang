@@ -4,7 +4,7 @@ import { Routes, RouterModule      } from '@angular/router';
 import { LoginFormComponent        } from './common/login-form/login-form.component';
 import { RegistrationFormComponent } from './common/registration-form/registration-form.component';
 import { ContainersComponent       } from './components/mod-containers/containers/containers.component';
-import { UsersComponent            } from './components/users/users.component';
+import { UsersComponent            } from './components/mod-users/users/users.component';
 import { ItemComponent             } from './components/item/item.component';
 import { LocationsPrivateComponent } from './components/mod-locations/locations/locations-private/locations-private.component';
 import { HomeComponent             } from './components/home/home.component';

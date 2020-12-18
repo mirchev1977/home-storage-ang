@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UserStoreService } from '../../services/user-store.service';
-import { MessagingService } from '../../services/messaging.service';
-import { UserModel } from '../../models/user.model';
+import { UserStoreService } from '../../../services/user-store.service';
+import { MessagingService } from '../../../services/messaging.service';
+import { UserModel } from '../../../models/user.model';
 
 @Component({
   selector: 'app-users',

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserStoreService } from '../../services/user-store.service';
-import { MessagingService } from '../../services/messaging.service';
-import { UserModel } from '../../models/user.model';
+import { UserStoreService } from '../../../services/user-store.service';
+import { MessagingService } from '../../../services/messaging.service';
+import { UserModel } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user',
