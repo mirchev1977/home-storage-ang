@@ -16,6 +16,18 @@ export class UsersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.userStore.loadUsers().subscribe(
+        ( data )  => {
+          if ( data[ 'status' ] === 'ok' ) {
+            this.userStore.allUsers = data[ 'users' ];
+            this.userStore.printSuccessMessage( 'Users loaded successfully!' );
+          } else {
+            this.userStore.logOut();
+            this.userStore.printErrorMessage( 'Users cannot be loaded!' );
+          }
+        },
+        ( err ) => { console.log( err ) }
+    );
   }
 
   usrStore () {
