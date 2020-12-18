@@ -1,5 +1,5 @@
 import { NgModule                  } from '@angular/core';
-import { Routes, RouterModule      } from '@angular/router';
+import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 
 import { LoginFormComponent        } from './common/login-form/login-form.component';
 import { RegistrationFormComponent } from './common/registration-form/registration-form.component';
@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: '',                   component: HomeComponent                                                   },
   { path: 'locations/private',  canActivate: [ AuthGuard ], component: LocationsPrivateComponent           },
   { path: 'containers/private', canActivate: [ AuthGuard, LocationGuard ], component: ContainersComponent  },
-  { path: 'usersEdit',          canActivate: [ AdminGuard ], component: UsersComponent                     },
+  { path: 'usersEdit',          loadChildren: "./components/mod-users/users.module#UsersModule"            },
   { path: 'login',              component: LoginFormComponent                                              },
   { path: 'register',           component: RegistrationFormComponent                                       },
   
@@ -27,7 +27,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

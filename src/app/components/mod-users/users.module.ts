@@ -3,9 +3,13 @@ import {UserComponent} from "./user/user.component";
 import {UsersComponent} from "./users/users.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {BrowserModule} from "@angular/platform-browser";
 import {HttpClientModule} from "@angular/common/http";
-import {RouterModule} from "@angular/router";
+import {RouterModule, Routes} from "@angular/router";
+import {AdminGuard} from "../../services/admin-guard.service";
+
+const routes: Routes = [
+    { path: '', canActivate: [ AdminGuard ], component: UsersComponent },
+];
 
 @NgModule({
     declarations: [
@@ -15,13 +19,13 @@ import {RouterModule} from "@angular/router";
     imports: [
         CommonModule,
         FormsModule,
-        BrowserModule,
         HttpClientModule,
-        RouterModule,
+        RouterModule.forChild(routes),
     ],
     exports: [
         UserComponent,
         UsersComponent,
+        RouterModule
     ],
 })
 export class UsersModule {}

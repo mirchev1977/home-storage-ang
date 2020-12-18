@@ -16,7 +16,6 @@ import { LocationGuard } from './services/location-guard.service';
 import { HomeComponent } from './components/home/home.component';
 import {LocationsModule} from "./components/mod-locations/locations.module";
 import {ContainersModule} from "./components/mod-containers/containers.module";
-import {UsersModule} from "./components/mod-users/users.module";
 import {CommonsModule} from "./common/commons.module";
 
 @NgModule({
@@ -31,7 +30,6 @@ import {CommonsModule} from "./common/commons.module";
     HttpClientModule,
     LocationsModule,
     ContainersModule,
-    UsersModule,
     CommonsModule,
   ],
   providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard, LocationGuard ],
