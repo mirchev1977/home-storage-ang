@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserStoreService } from '../../services/user-store.service';
+import { UserStoreService } from '../../../services/user-store.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

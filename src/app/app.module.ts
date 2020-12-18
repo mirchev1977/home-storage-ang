@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { ItemComponent } from './components/item/item.component';
 import { HeaderComponent } from './common/header/header.component';
 
 import { UserStoreService } from './services/user-store.service';
@@ -21,17 +20,12 @@ import { UsersComponent } from './components/users/users.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { AdminGuard } from './services/admin-guard.service';
 import { LocationGuard } from './services/location-guard.service';
-import { ContainerComponent } from './components/container/container.component';
-import { ContainersComponent } from './components/containers/containers.component';
-import { LocationsComponent } from './components/locations/locations.component';
-import { LocationComponent } from './components/location/location.component';
 import { HomeComponent } from './components/home/home.component';
-import { LocationsPrivateComponent } from './components/locations/locations-private/locations-private.component';
+import {LocationsModule} from "./components/mod-locations/locations.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    ItemComponent,
     HeaderComponent,
     LoginFormComponent,
     HomePageComponent,
@@ -39,18 +33,14 @@ import { LocationsPrivateComponent } from './components/locations/locations-priv
     RegistrationFormComponent,
     UserComponent,
     UsersComponent,
-    ContainerComponent,
-    ContainersComponent,
-    LocationsComponent,
-    LocationComponent,
     HomeComponent,
-    LocationsPrivateComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    LocationsModule,
   ],
   providers: [ UserStoreService, MessagingService, AuthGuard, AdminGuard, LocationGuard ],
   bootstrap: [AppComponent]
