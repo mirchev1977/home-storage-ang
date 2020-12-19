@@ -4,7 +4,6 @@ import { MessagingService     } from './messaging.service';
 import { UserModel            } from '../models/user.model';
 import { ContainerModel       } from '../models/container.model';
 import { HttpClient           } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 
 
 @Injectable()
@@ -30,7 +29,7 @@ export class UserStoreService {
     this.messaging.onInfo( 'Loading users...' );
 
     return this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/users/all', { 
-      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
     } );
   }
 
@@ -76,7 +75,7 @@ export class UserStoreService {
 
   logOut () {
     return this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/user/logout', {
-      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
     } );
   }
 
@@ -135,7 +134,7 @@ export class UserStoreService {
 
 
     return this.http.post( 'https://mirchev-home-storage-py.herokuapp.com/users/' + id +  '/update', user, {
-      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
     }  );
   }
 
@@ -152,7 +151,7 @@ export class UserStoreService {
 
 
     this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/users/' + id + '/delete', {
-      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
     } ).subscribe( resp => {
       this.allUsers = users;
       this.messaging.onSuccess( 'User deleted successfully!' );
@@ -167,7 +166,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/search/items', 
       { searchTerm: searchTerm, locationId: locationId },
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -179,7 +178,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/containers/new', 
       container,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -192,7 +191,7 @@ export class UserStoreService {
 
 
     this.http.get( 'https://mirchev-home-storage-py.herokuapp.com/container/' + contId + '/delete', {
-      headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+      //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
     } ).subscribe( resp => {
       if ( resp[ 'status' ] === 'ok' ) {
         this.allContainers = remaining; 
@@ -212,7 +211,7 @@ export class UserStoreService {
       ,
       model,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -233,7 +232,7 @@ export class UserStoreService {
       ,
       model,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -279,7 +278,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/item/new',
       item,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -296,7 +295,7 @@ export class UserStoreService {
     return this.http.get( 
       url,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -310,7 +309,7 @@ export class UserStoreService {
     return this.http.get( 
       'https://mirchev-home-storage-py.herokuapp.com/item/' + id +'/delete',
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -321,7 +320,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/item/' + id +'/update',
       item,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -354,7 +353,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/items/paste',
       dto,
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }
@@ -368,7 +367,7 @@ export class UserStoreService {
       'https://mirchev-home-storage-py.herokuapp.com/items/uploadFile',
       { image: encodeURIComponent( fileBase64 ) },
       {
-        headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() } 
+        //headers: { 'Content-Type': 'application/json', Authorization: this.createLoginToken() }
       }
     );
   }

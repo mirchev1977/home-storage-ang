@@ -8,6 +8,7 @@ import {HomePageComponent} from "./home-page/home-page.component";
 import {LoginFormComponent} from "./login-form/login-form.component";
 import {MessagingComponent} from "./messaging/messaging.component";
 import {RegistrationFormComponent} from "./registration-form/registration-form.component";
+import {TokenInterceptor} from "../services/token.interceptor";
 
 const routes: Routes = [
     { path: 'login', component: LoginFormComponent           },

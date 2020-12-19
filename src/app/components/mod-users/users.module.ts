@@ -3,7 +3,7 @@ import {UserComponent} from "./user/user.component";
 import {UsersComponent} from "./users/users.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import { HttpClientModule} from "@angular/common/http";
 import {RouterModule, Routes} from "@angular/router";
 import {AdminGuard} from "../../services/admin-guard.service";
 
